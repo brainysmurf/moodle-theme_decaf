@@ -1,12 +1,12 @@
 /* W3C CSS Validated - 20 January 2012
 -------------------------------------*/
 html{background-color:[[setting:backgroundcolor]];}
-body,h1,h2,h3,h4,h5,h6,p,ul,ol,dl,input,textarea{font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;}
+body,h1,h2,h3,h4,h5,h6,p,ul,ol,dl,input,textarea{font-family:"Tahoma",Arial, Helvetica, sans-serif;}
 .wrapper {margin: 0 25px;}
 h1,h2,h3,h4,h5,h6,p{text-shadow:0 1px 0 #FFF;}
-body input{font-family:Arial,Helvetica,sans-serif;}
+body input{font-family:"Tahoma",Arial,Helvetica,sans-serif;}
 select,input,button,textarea{font-size:0.9em;}
-a:link,a:visited {color: #C22323;}
+a:link,a:visited {color: #4B609F;}
 a:hover,a:active {color: #251c17;}
 a img {border: none;}
 a:active {outline: none;}
@@ -14,9 +14,9 @@ a:active {outline: none;}
 /* Header
 ------------------------- */
 #page-header-wrapper{margin:0 0 0 50px;}
-#page-header{float:none;background:#E1E1E1 url([[pix:theme|bg-header]]) repeat-x scroll center bottom;margin-right:0;position:relative;min-height:100px;}
+#page-header{float:none;background:#4D63A3 url([[pix:theme|bg-header]]) repeat-x scroll center bottom;margin-right:0;position:relative;min-height:100px;}
 #page-header .sitelogo {float:left;margin:0.75em 0;}
-#page-header .headermain{color:#000;font-size:2.5em;font-weight:700;letter-spacing:-1px;text-decoration:none;text-transform:none;text-shadow:1px 1px 0 #FFF;margin:0.9em 20px 0.9em 0px;}
+#page-header .headermain{color:#D21D02;font-size:2.5em;font-weight:700;letter-spacing:-1px;text-decoration:none;text-transform:none;text-shadow:2px 1px 0 #414141;margin:0.9em 20px 0.9em 0px;-webkit-font-smoothing: antialised;}
 #page-header .headermenu {width:235px;}
 #page-header .headermenu a:hover{color:#C30;}
 #page-site-index .headermain{font-size:2.5em;margin:0.85em 0;}
@@ -66,9 +66,9 @@ a:active {outline: none;}
 
 /* Breadcrumb
 --------------------------- */
-.navbar{font-size:1em;background-color:#F0F0F0;border-bottom:1px solid #DDD;margin:0;padding:0 10px;}
-.navbar .breadcrumb{font-size:1em;font-weight:700;padding:6px;}
-.breadcrumb a,a:link,a:active{color:#1D8AC3;}
+.navbar{font-size:.75em;background-color:#F0F0F0;border-bottom:1px solid #DDD;margin:0;padding:0 10px;}
+.navbar .breadcrumb{font-size:1em;padding:6px;}
+.breadcrumb a,a:link,a:active{color:#4B609F;}
 .sep{background:url([[pix:theme|breadcrumb_arrow]]) no-repeat scroll 100% 50%;margin-right:5px;padding:0.98em 7px;}
 /* Calendar
 --------------------------- */
@@ -88,7 +88,7 @@ a:active {outline: none;}
 #region-pre {background:transparent url([[pix:theme|main-divider]]) repeat-y scroll right center;}
 #region-post{background:transparent url([[pix:theme|main-divider]]) repeat-y scroll left center;}
 
-.headingblock, h2.headingblock { border-width:1px;margin:0;padding:5px;font-family:"Trebuchet MS", arial, helvetica, sans-serif;}
+.headingblock, h2.headingblock { border-width:1px;margin:0;padding:5px;font-family:"Tahoma", arial, helvetica, sans-serif;}
 /* YUI messes with IE unless we go overboard here */
 img.iconsmall, .commands a img {height:15px; margin:2px; width:15px; border: 1px solid #808080; padding:1px; -webkit-border-radius:5px;-moz-border-radius: 5px;border-radius:5px; }
 img.iconlarge {width:16px;height:16px;margin:6px 4px 2px 4px;} /* Our icons are only 16x16, so we don't want to stretch them */
@@ -106,7 +106,7 @@ ul.section li.label {padding-bottom:5px !important;}
 .course-content .section .activity .contentafterlink {margin-left:26px;margin-top:0;}
 ul.section .activity .contentafterlink p {margin:0 0 1em;}
 body.editing ul.section>li {border-bottom: 1px dashed #808080; position:relative;}
-input[type=submit] {background:-webkit-gradient(linear,0% 40%,0% 70%,from(#F9F9F9),to(#E3E3E3));margin: 0 8px 0 0;padding: 2px 8px;text-align: center;vertical-align: middle;white-space: nowrap;cursor: default;outline: none;font-family: arial,sans-serif;color: black;border: 1px solid #BBB;border-radius: 3px;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-top-color: #CCC;border-bottom-color: #A0A0A0;}
+input[type=submit] {background:-webkit-gradient(linear,0% 40%,0% 70%,from(#F9F9F9),to(#E3E3E3));margin: 0 8px 0 0;padding: 2px 8px;text-align: center;vertical-align: middle;white-space: nowrap;cursor: default;outline: none;font-family: "Tahoma",sans-serif;color: black;border: 1px solid #BBB;border-radius: 3px;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-top-color: #CCC;border-bottom-color: #A0A0A0;}
 /* Make 2.3 activity chooser sit on top of modules in sections */
 div.moodle-dialogue-base {position:absolute;top:0;left:0;right:0;z-index:150;}
 
@@ -117,7 +117,7 @@ div.moodle-dialogue-base {position:absolute;top:0;left:0;right:0;z-index:150;}
 .block .calendar-controls .previous {background:transparent url([[pix:theme|previous]]) no-repeat left top; height:19px;}
 .block .calendar-controls .next {background:transparent url([[pix:theme|next]]) no-repeat right top;}
 .block .header{border-color:#EEE;border-width:0 1px;}
-.block .header h2{background:#EEE url([[pix:theme|bg-header]]) repeat-x scroll bottom center;color:#555;font-family:"Droid Sans",Helvetica,Arial,sans-serif;font-size:16px;letter-spacing:-0.5px;line-height:30px;text-shadow:0 1px 0 #DDD;text-transform:uppercase;padding:0;margin:4px;}
+.block .header h2{background:#EEE url([[pix:theme|bg-header]]) repeat-x scroll bottom center;color:#555;font-family:"Tahoma",sans-serif;font-size:16px;letter-spacing:-0.5px;line-height:30px;text-shadow:0 1px 0 #DDD;text-transform:uppercase;padding:0;margin:4px;}
 .block .block_action {margin-right:4px;}
 .block .header .block_action{margin:4px 5px;}
 .block_with_controls .header .title {position:relative;padding-bottom:20px;}
@@ -147,7 +147,7 @@ div.moodle-dialogue-base {position:absolute;top:0;left:0;right:0;z-index:150;}
 .dockeditempanel_hd .decaf-editbutton-wrap .hidepanelicon {margin-right:4px;}
 .decaf_with_edit_buttons.jsenabled.editing ul.section>li {z-index:3;}
 .decaf_with_edit_buttons.jsenabled.editing ul.section>li.decaf-editbutton-active-module {z-index:4;}
-.decaf_with_edit_buttons.jsenabled .decaf-editbutton {opacity:0.4;height:18px;font-size:10px;font-weight:bold;background-color:#C6FFB3;margin: 0;padding: 2px 4px;text-align: center;vertical-align: middle;white-space: nowrap;cursor: default;outline: none;font-family: arial,sans-serif;color: black;border: 1px solid #BBB;border-radius: 3px;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-top-color: #CCC;border-bottom-color: #A0A0A0;}
+.decaf_with_edit_buttons.jsenabled .decaf-editbutton {opacity:0.4;height:18px;font-size:10px;font-weight:bold;background-color:#C6FFB3;margin: 0;padding: 2px 4px;text-align: center;vertical-align: middle;white-space: nowrap;cursor: default;outline: none;font-family: "Tahoma",arial,sans-serif;color: black;border: 1px solid #BBB;border-radius: 3px;-webkit-border-radius: 3px;-moz-border-radius: 3px;border-top-color: #CCC;border-bottom-color: #A0A0A0;}
 .decaf_with_edit_buttons.jsenabled .decaf-editbutton:hover,
 .decaf_with_edit_buttons.jsenabled .active .decaf-editbutton {opacity:1;}
 .decaf_with_edit_buttons.jsenabled .decaf-editbutton:active {opacity:1; background-color:#B3FF99;}
