@@ -30,10 +30,10 @@ body #dock {top:26px; height:auto; bottom:0px;} /* Start dock at bottom of Aweso
 
 /* Awesomebar - appearance */
 .decaf-awesome-bar {border-bottom: 1px solid #1a1a1a;}
-.topadminsearchform{float:right;}
+.topadminsearchform{float:right;cursor:pointer;}
 input#topadminsearchquery{border:1px solid #aaa; -moz-border-radius:10px; -webkit-border-radius:10px; border-radius:10px; background:#fff url([[pix:theme|search_icon]]) no-repeat 2px 1px; width:200px; margin:4px 10px 2px 0; padding:1px 0 0 17px;}
 .decaf-awesome-bar a, .decaf-awesome-bar a:visited, .decaf-awesome-bar a:hover, .decaf-awesome-bar a:link {color:#BDBDBD;}
-.decaf-awesome-bar a:hover {background-color:#76b900;}
+.decaf-awesome-bar a:hover {background-color:#595959;}
 .decaf-awesome-bar, .decaf-awesome-bar li {background-color:#333; color:#BDBDBD;}
 .decaf-awesome-bar li:hover {background-color:#595959;cursor:pointer;}
 .decaf-awesome-bar ul ul li span, .decaf-awesome-bar li.clickable-with-children > a {padding:3px 20px; background-image:url([[pix:theme|nav-arrow-right]]); background-position:100% 50%; background-repeat:no-repeat;}
@@ -44,14 +44,14 @@ input#topadminsearchquery{border:1px solid #aaa; -moz-border-radius:10px; -webki
 
 /* Custom menu */
 #custommenu {position:relative; z-index:998;cursor:pointer;}
-#custommenu > ul > li > span.customitem, #custommenu > ul > li > a.customitem-no-children {padding:3px 8px 2px 8px; height:19px;}
+#custommenu > ul > li > span.customitem, #custommenu > ul > li > a.customitem-no-children {padding:10px 8px 2px 8px; height:19px;}
 .decaf-awesome-bar span.customitem {padding-left:8px;cursor:pointer;}
 .decaf-awesome-bar span.customitem > a {padding:0;cursor:pointer;}
 .decaf-awesome-bar a.customitem-no-children {padding:3px 8px;cursor:pointer;}
 #custommenu a.customitem-no-children {padding:2px 4px 1px 4px;cursor:pointer;}
 .decaf-awesome-bar > ul > li > a.customitem-no-children {padding:4px 8px;cursor:pointer;}
 .decaf-awesome-bar ul.decaf-custom-menu span a:hover {background-color:transparent;cursor:pointer;}
-.decaf-awesome-bar ul.decaf-custom-menu li:hover > span.customitem {background-color:#76b900;cursor:pointer;}
+.decaf-awesome-bar ul.decaf-custom-menu li:hover > span.customitem {background-color:#595959;cursor:pointer;}
 .decaf-awesome-bar ul.decaf-custom-menu li:hover > span.customitem.customitem-nolink {background-color:#595959; cursor:pointer;}
 
 /* z-index overrides to prevent other things sitting on top of Awesomebar */
