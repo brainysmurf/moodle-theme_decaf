@@ -348,23 +348,33 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
     }
 
     public function search_form(moodle_url $formtarget, $searchvalue) {
-        global $CFG;
+      //global $CFG;
+        //$content .= html_writer::start_tag('span', array('id' =>'awesomeNavMenu'));
 
-        if (empty($searchvalue)) {
-            $searchvalue = 'Search Settings..';
-        }
+        //$content .= html_writer::start_tag('li');
+        $content = html_writer::start_tag('span', array('class' =>'topadminsearchform'));
+        //$content .= html_writer::empty_tag('img', array('alt' => '', 'src' =>$this->pix_url('user_silhouette', 'theme')));
+	$content .= "Adam";
+        $content .= html_writer::end_tag('span');
+        //$content .= html_writer::end_tag('li');
 
-        $content = html_writer::start_tag('form', array('class' => 'topadminsearchform', 'method' => 'get', 'action' => $formtarget));
-        $content .= html_writer::start_tag('div', array('class' => 'search-box'));
-        $content .= html_writer::tag('label', s(get_string('searchinsettings', 'admin')), array('for' => 'adminsearchquery', 'class' => 'accesshide'));
-        $content .= html_writer::empty_tag('input', array('id' => 'topadminsearchquery', 'type' => 'text', 'name' => 'query', 'value' => s($searchvalue),
-                    'onfocus' => "if(this.value == 'Search Settings..') {this.value = '';}",
-                    'onblur' => "if (this.value == '') {this.value = 'Search Settings..';}"));
+	return $this->login_info();
+
+        //if (empty($searchvalue)) {
+        //    $searchvalue = 'Search Settings..';
+        //}
+
+        //$content = html_writer::start_tag('form', array('class' => 'topadminsearchform', 'method' => 'get', 'action' => $formtarget));
+        //$content .= html_writer::start_tag('div', array('class' => 'search-box'));
+        //$content .= html_writer::tag('label', s(get_string('searchinsettings', 'admin')), array('for' => 'adminsearchquery', 'class' => 'accesshide'));
+        //$content .= html_writer::empty_tag('input', array('id' => 'topadminsearchquery', 'type' => 'text', 'name' => 'query', 'value' => s($searchvalue),
+	//           'onfocus' => "if(this.value == 'Search Settings..') {this.value = '';}",
+	//          'onblur' => "if (this.value == '') {this.value = 'Search Settings..';}"));
         //$content .= html_writer::empty_tag('input', array('class'=>'search-go','type'=>'submit', 'value'=>''));
-        $content .= html_writer::end_tag('div');
-        $content .= html_writer::end_tag('form');
+        //$content .= html_writer::end_tag('div');
+        //$content .= html_writer::end_tag('form');
 
-        return $content;
+        //return $content;
     }
 
 }
