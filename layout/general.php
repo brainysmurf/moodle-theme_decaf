@@ -135,7 +135,7 @@ if (empty($PAGE->layout_options['noawesomebar'])) { ?>
 						<?php
         				}
         			}
-        		echo $OUTPUT->login_info();
+			 //echo $OUTPUT->login_info();
     	        echo $OUTPUT->lang_menu();
 	        	echo $PAGE->headingmenu;
         			?>
@@ -206,8 +206,8 @@ if (empty($PAGE->layout_options['noawesomebar'])) { ?>
 		<div class="footnote"><?php echo $footnote; ?></div>
         <p class="helplink"><?php echo page_doc_link(get_string('moodledocslink')) ?></p>
         <?php
-        echo $OUTPUT->login_info();
-        echo $OUTPUT->home_link();
+       //echo $OUTPUT->login_info();
+       //echo $OUTPUT->home_link();
         echo $OUTPUT->standard_footer_html();
         ?>
     </div>

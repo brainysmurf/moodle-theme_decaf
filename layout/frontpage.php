@@ -115,8 +115,8 @@ if (empty($PAGE->layout_options['noawesomebar'])) {  ?>
 						<?php
         				}
         			}
-        		echo $OUTPUT->login_info();
-    	        echo $OUTPUT->lang_menu();
+//echo $OUTPUT->login_info();
+//  	        echo $OUTPUT->lang_menu();
 	        	echo $PAGE->headingmenu;
 		        ?>	    
 	    	</div>
@@ -176,8 +176,8 @@ if (empty($PAGE->layout_options['noawesomebar'])) {  ?>
         </p>
 
         <?php
-        echo $OUTPUT->login_info();
-        echo $OUTPUT->home_link();
+			  //echo $OUTPUT->login_info();
+			  //echo $OUTPUT->home_link();
         echo $OUTPUT->standard_footer_html();
         ?>
     </div>
