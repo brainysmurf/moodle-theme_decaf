@@ -262,13 +262,11 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
         global $CFG;
         $content = html_writer::start_tag('ul', array('id' => 'awesomeHomeMenu', 'class' => 'dropdown  dropdown-horizontal'));
         $content .= html_writer::start_tag('li');
-        $content .= html_writer::start_tag('a', array('href' => "$CFG->wwwroot", 'id' =>'home'));
-        $content .= html_writer::empty_tag('img', array('alt' => '', 'src' =>$this->pix_url('home_icon', 'theme')));
-        $content .= html_writer::end_tag('a');
+        $content .= html_writer::tag('a', '<i class="icon-home"></i>Home', array('href' => "$CFG->wwwroot", 'id' =>'home'));
         $content .= html_writer::end_tag('li');
         $content .= html_writer::start_tag('li');
         $content .= html_writer::start_tag('span', array('id' =>'awesomeNavMenu'));
-        $content .= html_writer::empty_tag('img', array('alt' => '', 'src' =>$this->pix_url('user_silhouette', 'theme')));
+        $content .= html_writer::tag('a', '<i class="icon-user"></i>My', array('href' => "$CFG->wwwroot".'/my', 'id' =>'home'));
         $content .= html_writer::end_tag('span');
         $content .= $this->navigation_node($navigation, array());
         $content .= html_writer::end_tag('li');
