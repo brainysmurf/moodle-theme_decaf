@@ -38,7 +38,7 @@ input#topadminsearchquery{border:1px solid #aaa; -moz-border-radius:10px; -webki
 .decaf-awesome-bar a:hover {background-color:#595959;}
 .decaf-awesome-bar, .decaf-awesome-bar li {background-color:#333; color:#BDBDBD;}
 .decaf-awesome-bar li:hover {background-color:#595959;cursor:pointer;}
-.decaf-awesome-bar ul ul li span, .decaf-awesome-bar li.clickable-with-children > a {padding:3px 20px; background-image:url([[pix:theme|nav-arrow-right]]); background-position:100% 50%; background-repeat:no-repeat;}
+.decaf-awesome-bar ul ul li span, .decaf-awesome-bar li.clickable-with-children > a {padding:3px 20px;} /* background-image:url([[pix:theme|nav-arrow-right]]); background-position:100% 50%; background-repeat:no-repeat;} */
 .decaf-awesome-bar ul ul a {height:100%; margin:0; vertical-align:top; padding-top:2px;}
 .decaf-awesome-bar ul ul li:hover > span, .decaf-awesome-bar li.clickable-with-children:hover > a {background-image:url([[pix:theme|ab-arrowover]]);}
 .decaf-awesome-bar ul ul li:hover > span {cursor:pointer;}
@@ -46,7 +46,7 @@ input#topadminsearchquery{border:1px solid #aaa; -moz-border-radius:10px; -webki
 
 /* Custom menu */
 #custommenu {position:relative; z-index:998;cursor:pointer;}
-#custommenu > ul > li > span.customitem, #custommenu > ul > li > a.customitem-no-children {padding:10px 8px 2px 8px; height:30px;}
+#custommenu > ul > li > span.customitem, #custommenu > ul > li > a.customitem-no-children {line-height:30px;padding:10px 8px 2px 8px; height:30px;}
 .decaf-awesome-bar span.customitem {padding-left:8px;cursor:pointer;}
 .decaf-awesome-bar span.customitem > a {padding:0;cursor:pointer;}
 .decaf-awesome-bar a.customitem-no-children {padding:3px 8px;cursor:pointer;}
