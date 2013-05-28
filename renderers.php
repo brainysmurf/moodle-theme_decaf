@@ -132,6 +132,15 @@ class theme_decaf_core_renderer extends core_renderer {
         // Required to ensure we get unique trackable id's
         static $submenucount = 0;
         $content = html_writer::start_tag('li');
+	switch ($menunode->get_text()) {
+	case 'DragonNet': $content .= html_writer::tag('i', '', array('class'=>'icon-location-arrow')); break;
+	case 'Facilities Bookings': $content .= html_writer::tag('i', '', array('class'=>'icon-ticket')); break;
+	case 'Surveys': $content .= html_writer::tag('i', '', array('class'=>'icon-tasks')); break;
+	case 'Directory': $content .= html_writer::tag('i', '', array('class'=>'icon-info-sign')); break;
+	case 'DragonTV': $content .= html_writer::tag('i', '', array('class'=>'icon-facetime-video')); break;
+	case 'Help': $content .= html_writer::tag('i', '', array('class'=>'icon-phone')); break; /* l.;;. */
+	case 'Documents': $content .= html_writer::tag('i', '', array('class'=>'icon-file-alt')); break;
+	}
         if ($menunode->has_children()) {
             // If the child has menus render it as a sub menu
             $submenucount++;
@@ -331,7 +340,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 
 
             if($isbranch && !(is_string($item->action) || empty($item->action))) {
-                $content = html_writer::tag('li', $content, array('class' => 'clickable-with-children'));
+	        $content = html_writer::tag('li', $content.'<i class="icon-caret-right"></i>', array('class' => 'clickable-with-children'));
             } else {
                 $content = html_writer::tag('li', $content);
             }
