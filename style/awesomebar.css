@@ -10,13 +10,13 @@
  * @Copyright   GNU GENERAL PUBLIC LICENSE Version 3.0
  */
 /* Awesomebar - workings and structure */
-.decaf-awesome-bar {left:0; width:100%;height:32px;z-index:999;}
-#awesomebar {position:fixed; top:0;}
-#awesomebar ul#awesomeHomeMenu > li {padding-bottom:0;}
-#awesomebar ul#awesomeHomeMenu > li > span, #awesomebar ul#awesomeHomeMenu > li > a {padding-bottom:1px; padding-top:3px; height:30px;}
+.decaf-awesome-bar {width:100%;height:33px;z-index:999;line-height:30px;}
+#awesomebar {position:fixed;}
+#awesomebar ul#awesomeHomeMenu > li {}
+#awesomebar ul#awesomeHomeMenu > li > span, #awesomebar ul#awesomeHomeMenu > li > a {padding-bottom:2px; padding-top:3px; height:25px;}
 .decaf-awesome-bar ul, .decaf-awesome-bar li {list-style:none; margin:0; padding:0;}
 
-.decaf-awesome-bar > ul > li {padding-top:20px;height:30px;float:left;}
+.decaf-awesome-bar > ul > li {padding-top:20px;height:10px;float:left;}
 .decaf-awesome-bar > ul > li > span, .decaf-awesome-bar > ul > li > a, .decaf-awesome-bar > ul > li > span.customitem {line-height:30px;padding:4px 8px;}
 .decaf-awesome-bar li.clickable-with-children > a {padding:4px 2px 4px 19px;line-height:30px;height:30px;}
 .decaf-awesome-bar ul.dropdown ul {display:none; width:250px; z-index:598;}
