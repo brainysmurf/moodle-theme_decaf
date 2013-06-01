@@ -381,11 +381,11 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
         //$content .= html_writer::start_tag('li');
         $content = html_writer::start_tag('span', array('class' =>'topadminsearchform'));
         //$content .= html_writer::empty_tag('img', array('alt' => '', 'src' =>$this->pix_url('user_silhouette', 'theme')));
-	$content .= "Adam";
+	$content .= $this->login_info();
         $content .= html_writer::end_tag('span');
         //$content .= html_writer::end_tag('li');
 
-	return $this->login_info();
+	return $content;
 
         //if (empty($searchvalue)) {
         //    $searchvalue = 'Search Settings..';
