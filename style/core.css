@@ -14,9 +14,9 @@ a:active {outline: none;}
 /* Header
 ------------------------- */
 #page-header-wrapper{margin:0 0 0 50px;}
-#page-header{float:none;background:#4D63A3 url([[pix:theme|bg-header]]) repeat-x scroll center bottom;margin-right:0;position:relative;min-height:100px;}
+#page-header{float:none;background:#4D63A3 url([[pix:theme|bg-header]]) repeat-x scroll center bottom;margin-right:0;position:relative;min-height:120px;}
 #page-header .sitelogo {float:left;margin:0.75em 0;}
-#page-header .headermain{color:#EEEEEE;font-size:2.5em;font-weight:700;letter-spacing:-1px;text-decoration:none;text-transform:none;text-shadow:4px 2px 0 #414141;margin:0.9em 30px 0.9em 0px;-webkit-font-smoothing: antialised;}
+#page-header .headermain{padding-top:15px;color:#EEEEEE;font-size:2.5em;font-weight:700;letter-spacing:-1px;text-decoration:none;text-transform:none;text-shadow:4px 2px 0 #414141;margin:0.9em 30px 0.9em 0px;-webkit-font-smoothing: antialised;}
 #page-header .headermenu {width:235px;}
 #page-header .headermenu a:hover{color:#C30;}
 #page-site-index .headermain{font-size:2.5em;margin:0.85em 0;}
