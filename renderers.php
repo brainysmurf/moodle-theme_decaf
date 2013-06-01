@@ -174,7 +174,11 @@ class theme_decaf_core_renderer extends core_renderer {
             } else {
                 $content .= $menunode->get_text();
             }
-            
+
+	    if ($menunode->get_parent()) {
+	      // don't print this if we're at the top of the chain
+  	      $content .= html_writer::tag('i', '', array('class'=>'pull-right icon-caret-right'));            
+	    }
             $content .= html_writer::end_tag('span');
             $content .= html_writer::start_tag('ul');
             foreach ($menunode->get_children() as $menunode) {
@@ -191,6 +195,7 @@ class theme_decaf_core_renderer extends core_renderer {
             }
             $content .= html_writer::link($url, $menunode->get_text(), array('title'=>$menunode->get_title(), 'class'=>'customitem-no-children'));
         }
+
         $content .= html_writer::end_tag('li');
         // Return the sub menu
         return $content;
@@ -360,7 +365,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 
 
             if($isbranch && !(is_string($item->action) || empty($item->action))) {
-	        $content = html_writer::tag('li', $content.'<i class="icon-caret-right"></i>', array('class' => 'clickable-with-children'));
+	        $content = html_writer::tag('li', $content.'<i class="pull-right icon-caret-right"></i>', array('class' => 'clickable-with-children'));
             } else {
                 $content = html_writer::tag('li', $content);
             }
