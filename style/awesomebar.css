@@ -29,7 +29,7 @@
 .decaf-awesome-bar ul ul a, .decaf-awesome-bar ul ul span {height:30px; padding-top:1px; padding-bottom:1px;}
 .decaf-awesome-bar a.customitem {padding-left:20px;}
 .decaf-awesome-bar a.customitem-no-children {padding-left:2px;line-height:30px;height:30px; padding-top:1px; padding-bottom:1px;}
-.decaf-awesome-bar span.customitem-nolink {line-height:30px;height:30px;padding-top:1px; padding-bottom:1px;}
+.decaf-awesome-bar span.customitem-nolink {line-height:30px;height:30px;padding-left:20px;padding-top:1px; padding-bottom:1px;}
 body #dock {top:30px; height:auto; bottom:0px;} /* Start dock at bottom of Awesomebar */
 
 /* Awesomebar - appearance */

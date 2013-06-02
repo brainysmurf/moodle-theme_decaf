@@ -137,6 +137,38 @@ class theme_decaf_core_renderer extends core_renderer {
     }
 
     /**
+     * Renders a pix_icon widget and returns the HTML to display it.
+     *
+     * @param pix_icon $icon
+     * @return string HTML fragment
+     */
+    protected function render_pix_icon(pix_icon $icon) {
+        $attributes = $icon->attributes;
+        $attributes['src'] = $this->pix_url($icon->pix, $icon->component);
+	//echo $icon->pix.' : ';
+	switch ($icon->pix) {
+	case 'i/navigationitem': return html_writer::tag('i', '', array('class'=>'icon-cog pull-left')); break;
+	case 'i/edit': return html_writer::tag('i', '', array('class'=>'icon-edit pull-left')); break;
+	case 'i/settings': return html_writer::tag('i', '', array('class'=>'icon-cogs pull-left')); break;
+	case 'i/group': return html_writer::tag('i', '', array('class'=>'icon-group pull-left')); break;
+	case 'i/filter': return html_writer::tag('i', '', array('class'=>'icon-filter pull-left')); break;
+	case 'i/backup': return html_writer::tag('i', '', array('class'=>'icon-upload pull-left')); break;
+	case 'i/import': return html_writer::tag('i', '', array('class'=>'icon-download pull-left')); break;
+	case 'i/restore': return html_writer::tag('i', '', array('class'=>'icon-download pull-left')); break;
+	case 'i/report': return html_writer::tag('i', '', array('class'=>'icon-file pull-left')); break;
+	case 'i/permissions': return html_writer::tag('i', '', array('class'=>'icon-user-md pull-left')); break;
+	case 'i/switchrole': return html_writer::tag('i', '', array('class'=>'icon-user pull-left')); break;
+	case 'i/outcomes': return html_writer::tag('i', '', array('class'=>'icon-bar-chart pull-left')); break;
+	case 'i/grades': return html_writer::tag('i', '', array('class'=>'icon-legal pull-left')); break;
+	case 'i/publish': return html_writer::tag('i', '', array('class'=>'icon-globe pull-left')); break;
+	case 'i/return': return html_writer::tag('i', '', array('class'=>'icon-rotate-left pull-left')); break;
+
+	}
+        return html_writer::empty_tag('img', $attributes);
+    }
+
+
+    /**
      * Renders a custom menu node as part of a submenu
      *
      * The custom menu this method override the render_custom_menu_item function
@@ -206,7 +238,7 @@ class theme_decaf_core_renderer extends core_renderer {
         $content = $item->get_content();
         $title = $item->get_title();
         if ($item->icon instanceof renderable && !$item->hideicon) {
-            $icon = $this->render($item->icon);
+                $icon = $this->render($item->icon);
             $content = $icon.$content; // use CSS for spacing of icons
         }
         if ($item->helpbutton !== null) {
@@ -215,6 +247,7 @@ class theme_decaf_core_renderer extends core_renderer {
         if ($content === '') {
             return '';
         }
+
         if ($item->action instanceof action_link) {
             //TODO: to be replaced with something else
             $link = $item->action;
@@ -242,6 +275,7 @@ class theme_decaf_core_renderer extends core_renderer {
             }
             $content = html_writer::tag('span', $content, $attributes);
         }
+
         return $content;
     }
 
@@ -342,6 +376,14 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
             }
 	    
             $content = $this->output->render($item);
+
+	    switch ($item->get_content()) {
+	    case 'Site administration': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
+	    case 'Course administration': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
+	    case 'My profile settings': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
+	    case 'Switch role to...': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
+	    }
+
             if($isbranch && $item->children->count()==0) {
                 // Navigation block does this via AJAX - we'll merge it in directly instead
                 if(!$subnav) {
