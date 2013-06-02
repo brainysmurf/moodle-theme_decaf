@@ -364,7 +364,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
                 $content .= $this->navigation_node($item);
             }
 
-            if($isbranch && !$item->parent==null) { // && !(is_string($item->action) || empty($item->action))) {
+            if($isbranch && !($item->parent->parent==null)) { // && !(is_string($item->action) || empty($item->action))) {
 	      // TODO: Have to do the ugly thing here and take out the last part of the </a> tag for it to work better
 	        $content = html_writer::tag('li', $content.'<i class="pull-right icon-caret-right"></i>', array('class' => 'clickable-with-children'));
             } else {
