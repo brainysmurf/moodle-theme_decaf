@@ -298,12 +298,12 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
         $content .= html_writer::start_tag('li');
         $content .= html_writer::tag('a', '<i class="icon-home"></i>Home', array('href' => "$CFG->wwwroot", 'id' =>'home'));
         $content .= html_writer::end_tag('li');
-        $content .= html_writer::start_tag('li');
-        $content .= html_writer::start_tag('span', array('id' =>'awesomeNavMenu'));
-        $content .= html_writer::tag('a', '<i class="icon-user"></i>My', array('href' => "$CFG->wwwroot".'/my', 'id' =>'home'));
-        $content .= html_writer::end_tag('span');
-        $content .= $this->navigation_node($navigation, array());
-        $content .= html_writer::end_tag('li');
+        //$content .= html_writer::start_tag('li');
+        //$content .= html_writer::start_tag('span', array('id' =>'awesomeNavMenu'));
+        //$content .= html_writer::tag('a', '<i class="icon-user"></i>My', array('href' => "$CFG->wwwroot".'/my', 'id' =>'home'));
+        //$content .= html_writer::end_tag('span');
+        //$content .= $this->navigation_node($navigation, array());
+        //$content .= html_writer::end_tag('li');
         $content .= html_writer::end_tag('ul');
         return $content;
     }
@@ -340,7 +340,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
             if ($isbranch) {
                 $item->hideicon = true;
             }
-
+	    
             $content = $this->output->render($item);
             if($isbranch && $item->children->count()==0) {
                 // Navigation block does this via AJAX - we'll merge it in directly instead
@@ -348,7 +348,8 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
                     // Prepare dummy page for subnav initialisation
                     $dummypage = new decaf_dummy_page();
                     $dummypage->set_context($PAGE->context);
-                    $dummypage->set_url($PAGE->url);
+                    $dummypage->set_url($PAGE->url);	    if ($item->name == 'Activity reports') { print_object($item); }
+
                     $subnav = new decaf_expand_navigation($dummypage, $item->type, $item->key);
                 } else {
                     // re-use subnav so we don't have to reinitialise everything
@@ -363,8 +364,8 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
                 $content .= $this->navigation_node($item);
             }
 
-
-            if($isbranch && !(is_string($item->action) || empty($item->action))) {
+            if($isbranch && !$item->parent==null) { // && !(is_string($item->action) || empty($item->action))) {
+	      // TODO: Have to do the ugly thing here and take out the last part of the </a> tag for it to work better
 	        $content = html_writer::tag('li', $content.'<i class="pull-right icon-caret-right"></i>', array('class' => 'clickable-with-children'));
             } else {
                 $content = html_writer::tag('li', $content);
