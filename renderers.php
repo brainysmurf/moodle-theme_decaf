@@ -438,11 +438,15 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	$content .= html_writer::start_tag('ul');
 	if (isloggedin()) {
 	    $content .= html_writer::start_tag('li');
-	    $content .= html_writer::tag('a', 'Edit Profile', array('href'=>"$CFG->wwwroot/user/editadvanced.php?id=$USER->id&course=1"));
+	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'Edit Profile', array('href'=>"$CFG->wwwroot/user/editadvanced.php?id=$USER->id&course=1"));
 	    $content .= html_writer::end_tag('li');
 
 	    $content .= html_writer::start_tag('li');
-	    $content .= html_writer::tag('a', 'Logout', array('href'=>$CFG->wwwroot.'/login/logout.php?sesskey='.sesskey()));
+	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'Change password', array('href'=>"$CFG->wwwroot/login/change_password.php?id=1"));
+	    $content .= html_writer::end_tag('li');
+
+	    $content .= html_writer::start_tag('li');
+	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-off pull-left')).'Logout', array('href'=>$CFG->wwwroot.'/login/logout.php?sesskey='.sesskey()));
 	    $content .= html_writer::end_tag('li');
 	}
 
@@ -504,6 +508,11 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
             }
 	    
             $content = $this->output->render($item);
+
+	    // Gets rid of "My profile settings" since we put it all in the user menu anyway
+	    if ($item->get_content() === 'My profile settings') {
+	        continue;
+	    } 
 
 	    switch ($item->get_content()) {
 	    case 'Site administration': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
