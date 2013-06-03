@@ -427,6 +427,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
     }
     public function settings_search_box() {
         global $CFG;
+	global $USER;
       // TODO: Make this a typical profile thing
         $content = html_writer::start_tag('ul', array('class'=>'topadminsearchform dropdown dropdown-horizontal'));
         $content .=  html_writer::start_tag('li');
@@ -436,6 +437,10 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	// Beginning of SSIS's special user menu
 	$content .= html_writer::start_tag('ul');
 	if (isloggedin()) {
+	    $content .= html_writer::start_tag('li');
+	    $content .= html_writer::tag('a', 'Edit Profile', array('href'=>"$CFG->wwwroot/user/editadvanced.php?id=$USER->id&course=1"));
+	    $content .= html_writer::end_tag('li');
+
 	    $content .= html_writer::start_tag('li');
 	    $content .= html_writer::tag('a', 'Logout', array('href'=>$CFG->wwwroot.'/login/logout.php?sesskey='.sesskey()));
 	    $content .= html_writer::end_tag('li');
