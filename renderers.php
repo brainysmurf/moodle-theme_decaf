@@ -5,6 +5,115 @@ class theme_decaf_core_renderer extends core_renderer {
     protected $really_editing = false;
 
 
+    /* 
+    For this theme we put links into the tab as a drop down, so let's get rid of those
+    */
+    public function login_info($withlinks = null) {
+        global $USER, $CFG, $DB, $SESSION;
+
+        if (during_initial_install()) {
+            return '';
+        }
+
+        if (is_null($withlinks)) {
+            $withlinks = empty($this->page->layout_options['nologinlinks']);
+        }
+
+        $loginpage = ((string)$this->page->url === get_login_url());
+        $course = $this->page->course;
+        if (session_is_loggedinas()) {
+            $realuser = session_get_realuser();
+            $fullname = fullname($realuser, true);
+            if ($withlinks) {
+                $loginastitle = get_string('loginas');
+                $realuserinfo = " [<a href=\"$CFG->wwwroot/course/loginas.php?id=$course->id&amp;sesskey=".sesskey()."\"";
+                $realuserinfo .= "title =\"".$loginastitle."\">$fullname</a>] ";
+            } else {
+                $realuserinfo = " [$fullname] ";
+            }
+        } else {
+            $realuserinfo = '';
+        }
+
+        $loginurl = get_login_url();
+
+        if (empty($course->id)) {
+            // $course->id is not defined during installation
+            return '';
+        } else if (isloggedin()) {
+            $context = context_course::instance($course->id);
+
+            $fullname = fullname($USER, true);
+            // Since Moodle 2.0 this link always goes to the public profile page (not the course profile page)
+            if ($withlinks) {
+	      $linktitle = get_string('viewprofile');
+	      $username = "<a href=\"$CFG->wwwroot/user/profile.php?id=$USER->id\" title=\"$linktitle\">$fullname</a>";
+            } else {
+                $username = $fullname;
+            }
+            if (is_mnet_remote_user($USER) and $idprovider = $DB->get_record('mnet_host', array('id'=>$USER->mnethostid))) {
+                if ($withlinks) {
+                    $username .= " from <a href=\"{$idprovider->wwwroot}\">{$idprovider->name}</a>";
+                } else {
+                    $username .= " from {$idprovider->name}";
+                }
+            }
+            if (isguestuser()) {
+                $loggedinas = $realuserinfo.get_string('loggedinasguest');
+                if (!$loginpage && $withlinks) {
+                    $loggedinas .= " (<a href=\"$loginurl\">".get_string('login').'</a>)';
+                }
+            } else if (is_role_switched($course->id)) { // Has switched roles
+                $rolename = '';
+                if ($role = $DB->get_record('role', array('id'=>$USER->access['rsw'][$context->path]))) {
+                    $rolename = ': '.role_get_name($role, $context);
+                }
+                $loggedinas = get_string('loggedinas', 'moodle', $username).$rolename;
+                if ($withlinks) {
+                    $url = new moodle_url('/course/switchrole.php', array('id'=>$course->id,'sesskey'=>sesskey(), 'switchrole'=>0, 'returnurl'=>$this->page->url->out_as_local_url(false)));
+                    $loggedinas .= '('.html_writer::tag('a', get_string('switchrolereturn'), array('href'=>$url)).')';
+                }
+            } else {
+                $loggedinas = $realuserinfo.get_string('loggedinas', 'moodle', $username);
+                if ($withlinks) {
+		  // Take out Logout link
+		  //$loggedinas .= " (<a href=\"$CFG->wwwroot/login/logout.php?sesskey=".sesskey()."\">".get_string('logout').'</a>)';
+                }
+            }
+        } else {
+	  $loggedinas = html_writer::tag('a', get_string('loggedinnot', 'moodle'), array('href'=>$CFG->wwwroot.'/login/index.php'));
+            if (!$loginpage && $withlinks) {
+	      //$loggedinas .= " (<a href=\"$loginurl\">".get_string('login').'</a>)';
+            }
+        }
+
+        //$loggedinas = '<div class="logininfo">'.$loggedinas.'</div>';
+	//$loggedinas .= '<a href="http://dragonnet.ssis-suzhou.net"><img src="http://dragonnet.ssis-suzhou.net/pix/smallogono.gif" /></a>';
+
+        if (isset($SESSION->justloggedin)) {
+            unset($SESSION->justloggedin);
+            if (!empty($CFG->displayloginfailures)) {
+                if (!isguestuser()) {
+                    if ($count = count_login_failures($CFG->displayloginfailures, $USER->username, $USER->lastlogin)) {
+                        $loggedinas .= '&nbsp;<div class="loginfailures">';
+                        if (empty($count->accounts)) {
+                            $loggedinas .= get_string('failedloginattempts', '', $count);
+                        } else {
+                            $loggedinas .= get_string('failedloginattemptsall', '', $count);
+                        }
+                        if (file_exists("$CFG->dirroot/report/log/index.php") and has_capability('report/log:view', context_system::instance())) {
+                            $loggedinas .= ' (<a href="'.$CFG->wwwroot.'/report/log/index.php'.
+                                                 '?chooselog=1&amp;id=1&amp;modid=site_errors">'.get_string('logs').'</a>)';
+                        }
+                        $loggedinas .= '</div>';
+                    }
+                }
+            }
+        }
+
+        return $loggedinas;
+    }
+
     /**
      * Returns HTML to display a "Turn editing on/off" button in a form.
      *
@@ -318,12 +427,26 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
     }
     public function settings_search_box() {
         global $CFG;
-        $content = "";
-        if (has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM))) {
-            $content .= $this->search_form(new moodle_url("$CFG->wwwroot/$CFG->admin/search.php"), optional_param('query', '', PARAM_RAW));
-        }
-        $content .= html_writer::empty_tag('br', array('clear' => 'all'));
-        return $content;
+      // TODO: Make this a typical profile thing
+        $content = html_writer::start_tag('ul', array('class'=>'topadminsearchform dropdown dropdown-horizontal'));
+        $content .=  html_writer::start_tag('li');
+	$content .= html_writer::tag('i', '', array('class'=>'icon-user pull-left'));
+	$content .= $this->login_info();
+	
+	// Beginning of SSIS's special user menu
+	$content .= html_writer::start_tag('ul');
+	if (isloggedin()) {
+	    $content .= html_writer::start_tag('li');
+	    $content .= html_writer::tag('a', 'Logout', array('href'=>$CFG->wwwroot.'/login/logout.php?sesskey='.sesskey()));
+	    $content .= html_writer::end_tag('li');
+	}
+
+	$content .= html_writer::end_tag('ul');
+	// End of that
+
+	$content .= html_writer::end_tag('li');
+	$content .= html_writer::end_tag('ul');
+	return $content;
     }
 
     public function navigation_tree(global_navigation $navigation) {
@@ -382,6 +505,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	    case 'Course administration': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
 	    case 'My profile settings': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
 	    case 'Switch role to...': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
+	    case 'Front page settings': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
 	    }
 
             if($isbranch && $item->children->count()==0) {
