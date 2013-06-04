@@ -4,6 +4,45 @@ class theme_decaf_core_renderer extends core_renderer {
 
     protected $really_editing = false;
 
+    /**
+     * Return the navbar content so that it can be echoed out by the layout
+     * SSIS modifies this to only include coures name followed by whatever activity after that
+     * Don't
+     * @return string XHTML navbar
+     */
+    public function navbar() {
+        global $CFG;
+        $items = $this->page->navbar->get_items();
+        $htmlblocks = array();
+        // Iterate the navarray and display each node
+        $itemcount = count($items);
+        $separator = get_separator();
+	$already = false;
+	$htmlblocks[] = html_writer::tag('a', 'Home'.$separator, array('href'=>$CFG->wwwroot));
+        for ($i=0;$i < $itemcount;$i++) {
+            $item = $items[$i];
+	    if (!$item->parent) { 
+	        // we can skip this for ssis
+	        continue; 
+	    }
+            $item->hideicon = true;
+            if ($already === false) {
+                $content = html_writer::start_tag('li');
+		$content .= html_writer::tag('a', $item->title, array('href'=>$item->action));
+		$content .= html_writer::end_tag('li');
+		$already = true;
+            } else {
+                $content = html_writer::tag('li', $separator.$this->render($item));
+            }
+            $htmlblocks[] = $content;
+        }
+
+        //accessibility: heading for navbar list  (MDL-20446)
+        $navbarcontent = html_writer::tag('span', get_string('pagepath'), array('class'=>'accesshide'));
+        $navbarcontent .= html_writer::tag('ul', join('', $htmlblocks), array('role'=>'navigation'));
+        // XHTML
+        return $navbarcontent;
+    }
 
     /* 
     For this theme we put links into the tab as a drop down, so let's get rid of those
@@ -219,6 +258,142 @@ class theme_decaf_core_renderer extends core_renderer {
         return $output;
     }
 
+
+    protected function seek(&$branch) {
+      foreach ($branch as $b) {
+	  if ($b->categories) {
+	      $this->seek($b->categories);
+	  }
+
+        foreach ( $b->courses as $course ) {
+	    if (! array_key_exists($course->id, $this->user_courses)) {
+	        unset($b->courses[$course->id]);
+	    }
+        }
+
+      }
+    }
+
+    protected function ridof(&$branch) {
+        for ($i = 0, $size = count($branch); $i < $size; $i++) {
+	    if (isset($branch[$i]->categories) && ! empty($branch[$i]->categories)) {
+	        $this->ridof($branch[$i]->categories);
+	    }
+	    if (isset($branch[$i]->depth) && empty($branch[$i]->courses) && empty($branch[$i]->categories)) {
+	        unset($branch[$i]);
+            }
+	}
+    }
+
+    protected function howmany($branch) {
+        $this_total = 0;
+	if (! $branch) { return 0; }
+        foreach ($branch as $b) {
+	    if ($b->courses) {
+	        $this_total += count($b->courses);
+	    }
+	    if ($b->categories) {
+		$this_total += $this->howmany($b->categories); 
+	    }
+        }
+	return $this_total;
+    }
+
+    protected function return_courses($branch) {
+      if (! $branch) { return $branch; }
+        $these_courses = array();
+	foreach ($branch as $b) {
+            if ($b->categories) {
+	        foreach ($this->return_courses($b->categories) as $course) {
+		    $these_courses[$course->id] = $course;
+		    $these_courses[$course->id]->category = 50;
+	        }
+	    }
+	    if ($b->courses) {
+	        foreach ($b->courses as $course) {
+	            $these_courses[$course->id] = $course;
+		    $these_courses[$course->id]->category = 50;
+	        }
+            }
+	}
+	return $these_courses;
+    }
+
+    protected function spellout(&$branch) {
+        global $DB;
+        $results = $DB->get_records_sql('SELECT * FROM ssismdl_course_categories WHERE parent = ? ORDER BY sortorder', array('0'));
+
+	// First, need to get the index of the smart tab
+	$keys = array_keys($results);
+	$smart_tab_index = null;
+        for ($i = 0; $i < count($results); $i++) {
+	  $this_one = $results[$keys[$i]];
+	  if ($this_one->name == 'Teaching & Learning') {
+	      $smart_tab_index = $i;
+	  }
+        }
+	
+	$maximumnumber = 20;
+
+	if (isset($smart_tab_index) && array_key_exists($smart_tab_index, $branch)) {
+	    $smart_tab_branch = array($branch[$smart_tab_index]);
+	} else {
+	    $smart_tab_branch = NULL;
+	}
+        if ($smart_tab_branch && $this->howmany($smart_tab_branch) <= 20) {
+	    $branch[$smart_tab_index]->courses = $this->return_courses($smart_tab_branch);
+	    $branch[$smart_tab_index]->categories = array();
+	}
+    }
+
+    public function setup_courses() {
+         $this->my_courses = get_course_category_tree();
+	 $this->all_courses = $this->my_courses;  // copies it
+         $this->user_courses = enrol_get_my_courses('category', 'visible DESC, fullname ASC');
+	 $this->seek($this->my_courses);
+	 $this->ridof($this->my_courses);
+	 $this->spellout($this->my_courses);
+     }
+
+    protected function add_category_to_custom_menu_for_admins($menu, $category) {
+        // We use a sort starting at a high value to ensure the category gets added to the end
+        static $sort = 1000;
+	$old_sort = $sort;
+	$node = $menu->add($category->name, new moodle_url('/course/category.php', array('id' =>  $category->id)), NULL, NULL, $old_sort++);
+
+        // Add subcategories to the category node by recursivily calling this method.
+        $subcategories = $category->categories;
+        foreach ($subcategories as $subcategory) {
+            $this->add_category_to_custom_menu_for_admins($node, $subcategory);
+        }
+
+        // Now we add courses to the category node in the menu
+        $courses = $category->courses;
+        foreach ($courses as $course) {
+            $node->add($course->fullname, new moodle_url('/course/view.php', array('id' => $course->id)), $course->fullname);
+        }
+	$sort = $old_sort + 2;
+    }
+
+    protected function add_to_custom_menu($menu, $cat_name, $array) {
+	foreach ($array as $a) {
+	    $categories_no_click = NULL; // no clicking, change this to a url if you want clicking
+
+	    if ($a->name == 'Invisible') { continue; }
+
+	    $node = $menu->add($a->name, $categories_no_click, NULL, NULL, $a->sortorder);
+	    if ($a->name == 'Teaching & Learning') {
+	        $this->teachinglearningnode = $node;
+	    }
+
+            $this->add_to_custom_menu($node, $a->name, $a->categories);
+	    
+            foreach ($a->courses as $course) {
+	      $node->add($icon.$course->fullname, new moodle_url('/course/view.php', array('id' => $course->id)), $course->fullname);
+            }
+        }
+    }
+
     /**
      * Renders a custom menu object (located in outputcomponents.php)
      *
@@ -230,6 +405,22 @@ class theme_decaf_core_renderer extends core_renderer {
      */
     protected function render_custom_menu(custom_menu $menu) {
         // If the menu has no children return an empty string
+        if (isloggedin())
+	    if (has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM))) {
+	        $sort = 1000;
+	        $mycourses = get_course_category_tree();
+	        foreach ($mycourses as $category) {
+	            $this->add_category_to_custom_menu_for_admins($menu, $category);
+	        }
+	    } else {
+    	        $this->setup_courses();
+	        $this->teachinglearningnode = NULL;
+	        $this->add_to_custom_menu($menu, '', $this->my_courses);
+	        if ($this->teachinglearningnode) {
+	            $this->teachinglearningnode->add('Browse ALL Courses', new moodle_url('/course/category.php', array('id' => 50)), 'Browse ALL Courses');
+	    }
+        }
+  
         if (!$menu->has_children()) {
             return '';
         }
@@ -239,6 +430,7 @@ class theme_decaf_core_renderer extends core_renderer {
         foreach ($menu->get_children() as $item) {
             $content .= $this->render_custom_menu_item($item);
         }
+
         // Close the open tags
         $content .= html_writer::end_tag('ul');
         // Return the custom menu
@@ -301,6 +493,8 @@ class theme_decaf_core_renderer extends core_renderer {
 	case 'DragonTV': $content .= html_writer::tag('i', '', array('class'=>'icon-facetime-video')); break;
 	case 'Help': $content .= html_writer::tag('i', '', array('class'=>'icon-phone')); break; /* l.;;. */
 	case 'Documents': $content .= html_writer::tag('i', '', array('class'=>'icon-file-alt')); break;
+	case 'Teaching & Learning': $content .= html_writer::tag('i', '', array('class'=>'icon-magic')); break;
+	case 'Groups': $content .= html_writer::tag('i', '', array('class'=>'icon-rocket')); break;
 	}
         if ($menunode->has_children()) {
             // If the child has menus render it as a sub menu
@@ -316,9 +510,11 @@ class theme_decaf_core_renderer extends core_renderer {
                 $content .= $menunode->get_text();
             }
 
-	    if ($menunode->get_parent()) {
-	      // don't print this if we're at the top of the chain
-  	      $content .= html_writer::tag('i', '', array('class'=>'pull-right icon-caret-right'));            
+	    if ($parent = $menunode->get_parent()) {
+	      // don't use the icon if we're at the top of the chain
+	      if (!$parent->get_text() === 'root') {
+  	          $content .= html_writer::tag('i', '', array('class'=>'pull-right icon-caret-right'));            
+	      }
 	    }
             $content .= html_writer::end_tag('span');
             $content .= html_writer::start_tag('ul');
@@ -422,8 +618,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 
     public function settings_tree(settings_navigation $navigation) {
         global $CFG;
-        $content = $this->navigation_node($navigation, array('class' => 'dropdown  dropdown-horizontal'));
-        return $content;
+        return $this->navigation_node($navigation, array('class' => 'dropdown  dropdown-horizontal'));
     }
     public function settings_search_box() {
         global $CFG;
@@ -528,7 +723,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
                     // Prepare dummy page for subnav initialisation
                     $dummypage = new decaf_dummy_page();
                     $dummypage->set_context($PAGE->context);
-                    $dummypage->set_url($PAGE->url);	    if ($item->name == 'Activity reports') { print_object($item); }
+                    $dummypage->set_url($PAGE->url);
 
                     $subnav = new decaf_expand_navigation($dummypage, $item->type, $item->key);
                 } else {

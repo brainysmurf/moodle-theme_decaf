@@ -18,7 +18,8 @@
 
 .decaf-awesome-bar > ul > li {height:10px;float:left;}
 .decaf-awesome-bar > ul > li > span, .decaf-awesome-bar > ul > li > a, .decaf-awesome-bar > ul > li > span.customitem {line-height:30px;padding-left:2px;padding-right:8px;width:88%;}
-.decaf-awesome-bar li.clickable-with-children > a {padding:0;line-height:30px;height:100%;width:88%}
+.decaf-awesome-bar li.clickable-with-children > a {padding:0;padding-left:22px;line-height:30px;height:100%;width:70%}
+.decaf-awesome-bar li.clickable-with-children > span {padding-left:22px;line-height:30px;height:100%;width:88%}
 .decaf-awesome-bar ul.dropdown ul {display:none; width:225px; z-index:598;}
 .decaf-awesome-bar ul.dropdown li {line-height:30px;height:30px;padding:1px;padding-left:10px;padding-right:10px;position:relative;}
 .decaf-awesome-bar ul.dropdown i {display:inline-block;padding-left:4px;padding-top:1px;width:15px;line-height:30px;}
@@ -34,7 +35,7 @@ body #dock {top:30px; height:auto; bottom:0px;} /* Start dock at bottom of Aweso
 
 /* Awesomebar - appearance */
 .decaf-awesome-bar {border-bottom: 1px solid #1a1a1a;}
-.topadminsearchform{float:right;padding-top:2px;padding-bottom:2px;line-height:25px;}
+.topadminsearchform{float:right;padding-top:2px;min-width:150px;padding-bottom:2px;line-height:25px;}
 input#topadminsearchquery{border:1px solid #aaa; -moz-border-radius:10px; -webkit-border-radius:10px; border-radius:10px; background:#fff url([[pix:theme|search_icon]]) no-repeat 2px 1px; width:200px; margin:4px 10px 2px 0; padding:1px 0 0 17px;}
 .decaf-awesome-bar a, .decaf-awesome-bar a:visited, .decaf-awesome-bar a:hover, .decaf-awesome-bar a:link {height:25px;color:#BDBDBD;}
 .decaf-awesome-bar a:hover {background-color:#595959;}
@@ -42,7 +43,7 @@ input#topadminsearchquery{border:1px solid #aaa; -moz-border-radius:10px; -webki
 .decaf-awesome-bar li:hover {background-color:#595959;cursor:default;}
 /* .decaf-awesome-bar ul ul li span, .decaf-awesome-bar li.clickable-with-children > a {display:inline-block} /* background-image:url([[pix:theme|nav-arrow-right]]); background-position:100% 50%; background-repeat:no-repeat;} */
 .decaf-awesome-bar ul ul a {display:inline-block;margin:0; vertical-align:top; padding-top:2px;}
-.decaf-awesome-bar ul ul li:hover > span, .decaf-awesome-bar li.clickable-with-children:hover > a {}
+/*.decaf-awesome-bar ul ul li:hover > span, .decaf-awesome-bar li.clickable-with-children:hover > a {} */
 .decaf-awesome-bar ul ul li:hover > span {cursor:pointer;}
 .decaf-awesome-bar li {border-color:#404040 #1a1a1a #1a1a1a #505050; border-style:solid; border-width:1px;}
 
@@ -56,7 +57,7 @@ input#topadminsearchquery{border:1px solid #aaa; -moz-border-radius:10px; -webki
 .decaf-awesome-bar > ul > li > a.customitem-no-children {padding-left:2px;cursor:default;}
 .decaf-awesome-bar ul.decaf-custom-menu span a:hover {background-color:transparent;cursor:pointer;}
 .decaf-awesome-bar ul.decaf-custom-menu li:hover > span.customitem {background-color:#595959;cursor:pointer;}
-.decaf-awesome-bar ul.decaf-custom-menu li:hover > span.customitem.customitem-nolink {background-color:#595959; cursor:default;}
+.decaf-awesome-bar ul.decaf-custom-menu li:hover > span.customitem.customitem-nolink {background-color:#595959;cursor:default;}
 
 /* z-index overrides to prevent other things sitting on top of Awesomebar */
 .filepicker-filelist .filepicker-container, .filemanager.fm-noitems .fm-empty-container {z-index:300;}

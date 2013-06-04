@@ -14,9 +14,9 @@ a:active {outline: none;}
 /* Header
 ------------------------- */
 #page-header-wrapper{margin:0 0 0 50px;}
-#page-header{float:none;background:#4D63A3 url([[pix:theme|bg-header]]) repeat-x scroll center bottom;margin-right:0;position:relative;min-height:120px;}
+#page-header{float:none;background:#4D63A3 url([[pix:theme|bg-header]]) repeat-x scroll center bottom;margin-right:0;position:relative;min-height:150px;}
 #page-header .sitelogo {float:left;margin:0.75em 0;}
-#page-header .headermain{padding-top:15px;color:#EEEEEE;font-size:2.5em;font-weight:700;letter-spacing:-1px;text-decoration:none;text-transform:none;text-shadow:4px 2px 0 #414141;margin:0.9em 30px 0.9em 0px;-webkit-font-smoothing: antialised;}
+#page-header .headermain{padding-top:30px;color:#D4D4D4;font-size:2.5em;font-weight:700;letter-spacing:-1px;text-decoration:none;text-transform:none;text-shadow:4px 2px 0 #414141;margin:0.9em 30px 0.9em 0px;-webkit-font-smoothing: antialised;}
 #page-header .headermenu {width:235px;}
 #page-header .headermenu a:hover{color:#C30;}
 #page-site-index .headermain{font-size:2.5em;margin:0.85em 0;}
@@ -66,7 +66,7 @@ a:active {outline: none;}
 
 /* Breadcrumb
 --------------------------- */
-.navbar{font-size:.75em;background-color:#F0F0F0;border-bottom:1px solid #DDD;margin:0;padding:0 10px;}
+.navbar{font-size:.9em;background-color:#F0F0F0;border-bottom:1px solid #DDD;margin:0;padding:0 10px;}
 .navbar .breadcrumb{font-size:1em;padding:6px;}
 .breadcrumb a,a:link,a:active{color:#4B609F;}
 .sep{background:url([[pix:theme|breadcrumb_arrow]]) no-repeat scroll 100% 50%;margin-right:5px;padding:0.98em 7px;}
