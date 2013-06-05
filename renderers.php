@@ -1,5 +1,7 @@
 <?php
 
+include_once 'calendar/lib.php';
+
 class theme_decaf_core_renderer extends core_renderer {
 
     protected $really_editing = false;
@@ -18,7 +20,7 @@ class theme_decaf_core_renderer extends core_renderer {
         $itemcount = count($items);
         $separator = get_separator();
 	$already = false;
-	$htmlblocks[] = html_writer::tag('a', 'Home'.$separator, array('href'=>$CFG->wwwroot));
+	$htmlblocks[] = html_writer::tag('a', 'Home', array('href'=>$CFG->wwwroot));
         for ($i=0;$i < $itemcount;$i++) {
             $item = $items[$i];
 	    if (!$item->parent) { 
@@ -347,13 +349,17 @@ class theme_decaf_core_renderer extends core_renderer {
     }
 
     public function setup_courses() {
-         $this->my_courses = get_course_category_tree();
-	 $this->all_courses = $this->my_courses;  // copies it
-         $this->user_courses = enrol_get_my_courses('category', 'visible DESC, fullname ASC');
-	 $this->seek($this->my_courses);
-	 $this->ridof($this->my_courses);
-	 $this->spellout($this->my_courses);
-     }
+        if (has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM))) {
+	    $this->user_courses = get_course_category_tree();
+	} else {
+            $this->my_courses = get_course_category_tree();
+	    $this->all_courses = $this->my_courses;  // copies it
+            $this->user_courses = enrol_get_my_courses('category', 'visible DESC, fullname ASC');
+	    $this->seek($this->my_courses);
+	    $this->ridof($this->my_courses);
+	    $this->spellout($this->my_courses);
+	}
+    }
 
     protected function add_category_to_custom_menu_for_admins($menu, $category) {
         // We use a sort starting at a high value to ensure the category gets added to the end
@@ -381,7 +387,7 @@ class theme_decaf_core_renderer extends core_renderer {
 
 	    if ($a->name == 'Invisible') { continue; }
 
-	    $node = $menu->add($a->name, $categories_no_click, NULL, NULL, $a->sortorder);
+	    $node = $menu->add($icon.$a->name, $categories_no_click, NULL, NULL, $a->sortorder);
 	    if ($a->name == 'Teaching & Learning') {
 	        $this->teachinglearningnode = $node;
 	    }
@@ -406,14 +412,12 @@ class theme_decaf_core_renderer extends core_renderer {
     protected function render_custom_menu(custom_menu $menu) {
         // If the menu has no children return an empty string
         if (isloggedin())
+
 	    if (has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM))) {
-	        $sort = 1000;
-	        $mycourses = get_course_category_tree();
 	        foreach ($mycourses as $category) {
 	            $this->add_category_to_custom_menu_for_admins($menu, $category);
 	        }
 	    } else {
-    	        $this->setup_courses();
 	        $this->teachinglearningnode = NULL;
 	        $this->add_to_custom_menu($menu, '', $this->my_courses);
 	        if ($this->teachinglearningnode) {
@@ -486,15 +490,15 @@ class theme_decaf_core_renderer extends core_renderer {
         static $submenucount = 0;
         $content = html_writer::start_tag('li');
 	switch ($menunode->get_text()) {
-	case 'DragonNet': $content .= html_writer::tag('i', '', array('class'=>'icon-location-arrow')); break;
-	case 'Facilities Bookings': $content .= html_writer::tag('i', '', array('class'=>'icon-ticket')); break;
-	case 'Surveys': $content .= html_writer::tag('i', '', array('class'=>'icon-tasks')); break;
-	case 'Directory': $content .= html_writer::tag('i', '', array('class'=>'icon-info-sign')); break;
-	case 'DragonTV': $content .= html_writer::tag('i', '', array('class'=>'icon-facetime-video')); break;
-	case 'Help': $content .= html_writer::tag('i', '', array('class'=>'icon-phone')); break; /* l.;;. */
-	case 'Documents': $content .= html_writer::tag('i', '', array('class'=>'icon-file-alt')); break;
-	case 'Teaching & Learning': $content .= html_writer::tag('i', '', array('class'=>'icon-magic')); break;
-	case 'Groups': $content .= html_writer::tag('i', '', array('class'=>'icon-rocket')); break;
+	case 'DragonNet': $content .= html_writer::tag('i', '', array('class'=>'icon-location-arrow pull-left')); break;
+	case 'Facilities Bookings': $content .= html_writer::tag('i', '', array('class'=>'icon-ticket pull-left')); break;
+	case 'Surveys': $content .= html_writer::tag('i', '', array('class'=>'icon-tasks pull-left')); break;
+	case 'Directory': $content .= html_writer::tag('i', '', array('class'=>'icon-info-sign pull-left')); break;
+	case 'DragonTV': $content .= html_writer::tag('i', '', array('class'=>'icon-facetime-video pull-left')); break;
+	case 'Help': $content .= html_writer::tag('i', '', array('class'=>'icon-phone pull-left')); break; /* l.;;. */
+	case 'Documents': $content .= html_writer::tag('i', '', array('class'=>'icon-file-alt pull-left')); break;
+	case 'Teaching & Learning': $content .= html_writer::tag('i', '', array('class'=>'icon-magic pull-left')); break;
+	case 'Groups': $content .= html_writer::tag('i', '', array('class'=>'icon-rocket pull-left')); break;
 	}
         if ($menunode->has_children()) {
             // If the child has menus render it as a sub menu
@@ -655,16 +659,31 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 
     public function navigation_tree(global_navigation $navigation) {
         global $CFG;
+	global $USER;
+
+	//$this->setup_courses();
+
         $content = html_writer::start_tag('ul', array('id' => 'awesomeHomeMenu', 'class' => 'dropdown  dropdown-horizontal'));
-        $content .= html_writer::start_tag('li');
-        $content .= html_writer::tag('a', '<i class="icon-home"></i>Home', array('href' => "$CFG->wwwroot", 'id' =>'home'));
-        $content .= html_writer::end_tag('li');
-        //$content .= html_writer::start_tag('li');
-        //$content .= html_writer::start_tag('span', array('id' =>'awesomeNavMenu'));
-        //$content .= html_writer::tag('a', '<i class="icon-user"></i>My', array('href' => "$CFG->wwwroot".'/my', 'id' =>'home'));
-        //$content .= html_writer::end_tag('span');
-        //$content .= $this->navigation_node($navigation, array());
-        //$content .= html_writer::end_tag('li');
+
+	if (isloggedin()) {
+	    // Home button
+            $content .= html_writer::start_tag('li');
+            $content .= html_writer::tag('a', '<i class="icon-home pull-left"></i>Home', array('href' => "$CFG->wwwroot"));
+            $content .= html_writer::end_tag('li');
+
+	    // Calendar button
+            $content .= html_writer::start_tag('li');
+            $content .= html_writer::tag('span', '<i class="icon-calendar pull-left"></i>Upcoming', array('href' => "$CFG->wwwroot"));
+            $content .= html_writer::end_tag('li');
+	}
+
+	$this->setup_courses();
+
+	include_once($CFG->dirroot.'/calendar/lib.php');
+	$days_ahead = 30;
+	$cal_items = calendar_get_upcoming($this->user_courses, true, $USER->id, $days_ahead);
+	
+
         $content .= html_writer::end_tag('ul');
         return $content;
     }
