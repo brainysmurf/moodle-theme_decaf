@@ -80,7 +80,7 @@ a:active {outline: none;}
 .tabtree .tabrow0 .tabrow1 li a{background:none !important;}
 /* User
 --------------------------- */
-.userinfobox .content{background:url([[pix:theme|gradient-sb]]) repeat-x 0 0;border-width:2px;}
+.userinfobox .content{background:url([[pix:theme|gradient-sb]]) repeat-x 0 0;}
 /* Content
 --------------------------- */
 #page {top:25px;}
