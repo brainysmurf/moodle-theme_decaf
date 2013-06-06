@@ -23,8 +23,13 @@ class theme_decaf_core_renderer extends core_renderer {
 	}
 
 	$content .= html_writer::start_tag('li');
+	$icon = html_writer::tag('i', '', array('class'=>'icon-maxcdn pull-left'));
+	$content .= html_writer::tag('a', $icon.'My DragonNet', array('href'=>$CFG->wwwroot.'/my'));
+	$content .= html_writer::end_tag('li');
+
+	$content .= html_writer::start_tag('li');
 	$icon = html_writer::tag('i', '', array('class'=>'icon-home pull-left'));
-	$content .= html_writer::tag('a', $icon.'Home', array('href'=>$CFG->wwwroot));
+	$content .= html_writer::tag('a', $icon.'DragonNet Front Page', array('href'=>$CFG->wwwroot));
 	$content .= html_writer::end_tag('li');
 
 	return $content;
@@ -659,7 +664,11 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	// Calendar button
         $content .= html_writer::start_tag('ul', array('class'=>'topadminsearchform dropdown dropdown-horizontal'));
         $content .=  html_writer::start_tag('li');
-	$content .= html_writer::tag('i', '', array('class'=>'icon-user pull-left'));
+	if (isloggedin()) {
+	    $content .= html_writer::tag('i', '', array('class'=>'icon-user pull-left'));
+	} else {
+	    $content .= html_writer::tag('i', '', array('class'=>'icon-signin pull-left'));
+	}
 	$content .= $this->login_info();
 	
 	// Beginning of SSIS's special user menu
@@ -674,7 +683,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	    $content .= html_writer::end_tag('li');
 
 	    $content .= html_writer::start_tag('li');
-	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-off pull-left')).'Logout', array('href'=>$CFG->wwwroot.'/login/logout.php?sesskey='.sesskey()));
+	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-signout pull-left')).'Logout', array('href'=>$CFG->wwwroot.'/login/logout.php?sesskey='.sesskey()));
 	    $content .= html_writer::end_tag('li');
 	}
 	$content .= html_writer::end_tag('ul');  // end submenu
