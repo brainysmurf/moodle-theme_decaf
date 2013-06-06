@@ -661,6 +661,10 @@ class theme_decaf_core_renderer extends core_renderer {
 
 }
 
+function students($item) {
+    return ($item == 'Student');
+}
+
 class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 
     public function settings_tree(settings_navigation $navigation) {
@@ -685,6 +689,29 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	// Beginning of SSIS's special user menu
 	$content .= html_writer::start_tag('ul');
 	if (isloggedin()) {
+
+	    $courseid = $this->page->course->id;
+
+	    $context = context_course::instance($courseid);
+	    if (has_capability('moodle/role:switchroles', $context)) {
+	        require_once('../config.php'); 
+
+	        $roles = get_switchable_roles($context);
+		if (!($roles===null)) {
+		
+		  $role = array_filter($roles, "students");
+		  if ($role) {
+		  $role = array_keys($role);
+		  $role = $role[0];
+		  $url = new moodle_url('/course/switchrole.php', array('id'=>$courseid, 'sesskey'=>sesskey(), 'switchrole'=>$role, 'returnurl'=>$this->page->url->out_as_local_url(false)));
+		  $content .= html_writer::start_tag('li');
+		  $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-user pull-left')).'Become Student', array('href'=>$url));
+		  $content .= html_writer::end_tag('li');
+		  $content .= html_writer::tag('hr');
+		  }
+		}
+	    }
+
 	    $content .= html_writer::start_tag('li');
 	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'Edit Profile', array('href'=>"$CFG->wwwroot/user/editadvanced.php?id=$USER->id&course=1"));
 	    $content .= html_writer::end_tag('li');
@@ -692,6 +719,8 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	    $content .= html_writer::start_tag('li');
 	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'Change password', array('href'=>"$CFG->wwwroot/login/change_password.php?id=1"));
 	    $content .= html_writer::end_tag('li');
+
+	    $content .= html_writer::tag('hr');
 
 	    $content .= html_writer::start_tag('li');
 	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-signout pull-left')).'Logout', array('href'=>$CFG->wwwroot.'/login/logout.php?sesskey='.sesskey()));
@@ -748,7 +777,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	    $name = $item->get_content();
 
 	    // Gets rid of "My profile settings" since we put it all in the user menu anyway
-	    if ($name === 'My profile settings') {
+	    if ($name === 'My profile settings' || $name === 'Switch role to...') {
 	        continue;
 	    } 
 
