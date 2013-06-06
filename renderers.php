@@ -18,7 +18,12 @@ class theme_decaf_core_renderer extends core_renderer {
 	    }
 	    if ($item->title === null) { continue; }
 	    $content .= html_writer::start_tag('li');
-	    $content .= html_writer::tag('a', $item->title, array('href'=>$item->action));
+	    if (!($item->title==='')) {
+		$output = $item->title.': '.$item->text;
+	    } else {
+	      $output = $item->text;
+	    }
+	    $content .= html_writer::tag('a', $output, array('href'=>$item->action));
 	    $content .= html_writer::end_tag('li');
 	}
 
@@ -29,7 +34,7 @@ class theme_decaf_core_renderer extends core_renderer {
 
 	$content .= html_writer::start_tag('li');
 	$icon = html_writer::tag('i', '', array('class'=>'icon-home pull-left'));
-	$content .= html_writer::tag('a', $icon.'DragonNet Front Page', array('href'=>$CFG->wwwroot));
+	$content .= html_writer::tag('a', $icon.'Home (Front Page)', array('href'=>$CFG->wwwroot));
 	$content .= html_writer::end_tag('li');
 
 	return $content;
@@ -48,7 +53,6 @@ class theme_decaf_core_renderer extends core_renderer {
         // Iterate the navarray and display each node
         $itemcount = count($items);
         $separator = get_separator();
-	$already = false;
 	$htmlblocks[] = html_writer::tag('a', 'Home', array('href'=>$CFG->wwwroot));
         for ($i=0;$i < $itemcount;$i++) {
             $item = $items[$i];
@@ -56,15 +60,20 @@ class theme_decaf_core_renderer extends core_renderer {
 	        // we can skip this for ssis
 	        continue; 
 	    }
-            $item->hideicon = true;
-            if ($already === false) {
-                $content = html_writer::start_tag('li');
-		$content .= html_writer::tag('a', $item->title, array('href'=>$item->action));
-		$content .= html_writer::end_tag('li');
-		$already = true;
-            } else {
-                $content = html_writer::tag('li', $separator.$this->render($item));
-            }
+
+	    if ($item->title === null) { continue; }
+
+            //$item->hideicon = true;
+            $content = html_writer::start_tag('li');
+
+	    if (!($item->title==='')) {
+		$output = $item->title.': '.$item->text;
+	    } else {
+	        $output = $item->text;
+	    }
+	    $content .= html_writer::tag('a', $separator.$output, array('href'=>$item->action));
+	    $content .= html_writer::end_tag('li');
+
             $htmlblocks[] = $content;
         }
 
@@ -411,6 +420,8 @@ class theme_decaf_core_renderer extends core_renderer {
     }
 
     protected function add_to_custom_menu($menu, $cat_name, $array) {
+      global $CFG;
+
 	foreach ($array as $a) {
 	    $categories_no_click = NULL; // no clicking, change this to a url if you want clicking
 
@@ -697,26 +708,11 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
         global $CFG;
 	global $USER;
 
-	//$this->setup_courses();
-
-        $content = html_writer::start_tag('ul', array('class' => 'dropdown dropdown-horizontal'));
-        $content .= html_writer::start_tag('li');
-	$icon = html_writer::tag('i', '', array('class'=>'icon-plane pull-left'));
-	$content .= html_writer::tag('span', $icon.'Navigate');
-	$content .= html_writer::start_tag('ul');
-
-	$content .= $this->navbuttons();
-	   
-	$content .= html_writer::end_tag('li');
-	$content .= html_writer::end_tag('ul');
 	    
-	    //$content .= html_writer::start_tag('ul');
 
-	    //$this->setup_courses();
-
-	    //include_once($CFG->dirroot.'/calendar/lib.php');
-	    //$days_ahead = 30;
-	    //$cal_items = calendar_get_upcoming($this->user_courses, true, $USER->id, $days_ahead);
+	//include_once($CFG->dirroot.'/calendar/lib.php');
+	//$days_ahead = 30;
+	//$cal_items = calendar_get_upcoming($this->user_courses, true, $USER->id, $days_ahead);
 
 	$content .= html_writer::end_tag('ul');
 	
