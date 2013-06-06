@@ -16,7 +16,7 @@ class theme_decaf_core_renderer extends core_renderer {
 	    if (!$item->parent) {
 	        continue;
 	    }
-
+	    if ($item->title === null) { continue; }
 	    $content .= html_writer::start_tag('li');
 	    $content .= html_writer::tag('a', $item->title, array('href'=>$item->action));
 	    $content .= html_writer::end_tag('li');
@@ -777,9 +777,11 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	    
             $content = $this->output->render($item);
 
+	    if (substr($name, -14) === 'administration') {
+	        $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content;
+	    }
+
 	    switch ($name) {
-	        case 'Site administration': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
-	        case 'Course administration': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
 	        case 'My profile settings': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
 	        case 'Switch role to...': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
 	        case 'Front page settings': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
