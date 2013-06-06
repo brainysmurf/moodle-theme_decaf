@@ -9,7 +9,7 @@ class theme_decaf_core_renderer extends core_renderer {
     public function navbuttons() {
         global $CFG;
 	$items = $this->page->navbar->get_items();
-
+	
 	$content = '';
 	for ($i=count($items); $i >= 0; $i--) {
 	    $item = $items[$i];
@@ -23,7 +23,7 @@ class theme_decaf_core_renderer extends core_renderer {
 	}
 
 	$content .= html_writer::start_tag('li');
-	$icon = html_writer::tag('i', '', array('class'=>'icon-maxcdn pull-left'));
+	$icon = html_writer::tag('i', '', array('class'=>'icon-shield pull-left'));
 	$content .= html_writer::tag('a', $icon.'My DragonNet', array('href'=>$CFG->wwwroot.'/my'));
 	$content .= html_writer::end_tag('li');
 
@@ -665,11 +665,11 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
         $content .= html_writer::start_tag('ul', array('class'=>'topadminsearchform dropdown dropdown-horizontal'));
         $content .=  html_writer::start_tag('li');
 	if (isloggedin()) {
-	    $content .= html_writer::tag('i', '', array('class'=>'icon-user pull-left'));
+	    $icon = html_writer::tag('i', '', array('class'=>'icon-user pull-left'));
 	} else {
-	    $content .= html_writer::tag('i', '', array('class'=>'icon-signin pull-left'));
+	    $icon = html_writer::tag('i', '', array('class'=>'icon-signin pull-left'));
 	}
-	$content .= $this->login_info();
+	$content .= $icon.$this->login_info();
 	
 	// Beginning of SSIS's special user menu
 	$content .= html_writer::start_tag('ul');
@@ -749,6 +749,25 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
                 $item = $item->children->last();
             }
 
+	    $name = $item->get_content();
+
+	    // Site admin only on admin
+	    if ($PAGE->course->id === '1266') {
+	        if (!($name === 'Site administration')) {
+	            continue;
+		}
+	    } else {
+		  // Only show site administration in special course 1266
+		if ($name === 'Site administration') {
+		    continue;
+		}
+	    }
+
+	    // Gets rid of "My profile settings" since we put it all in the user menu anyway
+	    if ($name === 'My profile settings') {
+	        continue;
+	    } 
+
             $isbranch = ($item->children->count() > 0 || $item->nodetype == navigation_node::NODETYPE_BRANCH || (property_exists($item, 'isexpandable') && $item->isexpandable));
             $hasicon = (!$sbranch && $item->icon instanceof renderable);
 
@@ -758,17 +777,12 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	    
             $content = $this->output->render($item);
 
-	    // Gets rid of "My profile settings" since we put it all in the user menu anyway
-	    if ($item->get_content() === 'My profile settings') {
-	        continue;
-	    } 
-
-	    switch ($item->get_content()) {
-	    case 'Site administration': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
-	    case 'Course administration': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
-	    case 'My profile settings': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
-	    case 'Switch role to...': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
-	    case 'Front page settings': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
+	    switch ($name) {
+	        case 'Site administration': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
+	        case 'Course administration': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
+	        case 'My profile settings': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
+	        case 'Switch role to...': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
+	        case 'Front page settings': $content = html_writer::tag('i', '', array('class'=>'icon-wrench pull-left')).$content; break;
 	    }
 
             if($isbranch && $item->children->count()==0) {
