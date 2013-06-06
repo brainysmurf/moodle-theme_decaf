@@ -11,7 +11,7 @@ class theme_decaf_core_renderer extends core_renderer {
 	$items = $this->page->navbar->get_items();
 
 	$content = '';
-	for ($i=0, $itemcount=count($items); $i < $itemcount; $i++) {
+	for ($i=count($items); $i >= 0; $i--) {
 	    $item = $items[$i];
 	    if (!$item->parent) {
 	        continue;
