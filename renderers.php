@@ -6,6 +6,30 @@ class theme_decaf_core_renderer extends core_renderer {
 
     protected $really_editing = false;
 
+    public function navbuttons() {
+        global $CFG;
+	$items = $this->page->navbar->get_items();
+
+	$content = '';
+	for ($i=0, $itemcount=count($items); $i < $itemcount; $i++) {
+	    $item = $items[$i];
+	    if (!$item->parent) {
+	        continue;
+	    }
+
+	    $content .= html_writer::start_tag('li');
+	    $content .= html_writer::tag('a', $item->title, array('href'=>$item->action));
+	    $content .= html_writer::end_tag('li');
+	}
+
+	$content .= html_writer::start_tag('li');
+	$icon = html_writer::tag('i', '', array('class'=>'icon-home pull-left'));
+	$content .= html_writer::tag('a', $icon.'Home', array('href'=>$CFG->wwwroot));
+	$content .= html_writer::end_tag('li');
+
+	return $content;
+    }
+
     /**
      * Return the navbar content so that it can be echoed out by the layout
      * SSIS modifies this to only include coures name followed by whatever activity after that
@@ -398,6 +422,7 @@ class theme_decaf_core_renderer extends core_renderer {
 	      $node->add($icon.$course->fullname, new moodle_url('/course/view.php', array('id' => $course->id)), $course->fullname);
             }
         }
+
     }
 
     /**
@@ -412,6 +437,8 @@ class theme_decaf_core_renderer extends core_renderer {
     protected function render_custom_menu(custom_menu $menu) {
         // If the menu has no children return an empty string
         if (isloggedin())
+
+	    $this->setup_courses();
 
 	    if (has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM))) {
 	        foreach ($mycourses as $category) {
@@ -624,11 +651,13 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
         global $CFG;
         return $this->navigation_node($navigation, array('class' => 'dropdown  dropdown-horizontal'));
     }
+
     public function settings_search_box() {
         global $CFG;
 	global $USER;
-      // TODO: Make this a typical profile thing
-        $content = html_writer::start_tag('ul', array('class'=>'topadminsearchform dropdown dropdown-horizontal'));
+        // TODO: Make this a typical profile thing ssis user menu
+	// Calendar button
+        $content .= html_writer::start_tag('ul', array('class'=>'topadminsearchform dropdown dropdown-horizontal'));
         $content .=  html_writer::start_tag('li');
 	$content .= html_writer::tag('i', '', array('class'=>'icon-user pull-left'));
 	$content .= $this->login_info();
@@ -648,9 +677,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-off pull-left')).'Logout', array('href'=>$CFG->wwwroot.'/login/logout.php?sesskey='.sesskey()));
 	    $content .= html_writer::end_tag('li');
 	}
-
-	$content .= html_writer::end_tag('ul');
-	// End of that
+	$content .= html_writer::end_tag('ul');  // end submenu
 
 	$content .= html_writer::end_tag('li');
 	$content .= html_writer::end_tag('ul');
@@ -663,28 +690,27 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 
 	//$this->setup_courses();
 
-        $content = html_writer::start_tag('ul', array('id' => 'awesomeHomeMenu', 'class' => 'dropdown  dropdown-horizontal'));
+        $content = html_writer::start_tag('ul', array('class' => 'dropdown dropdown-horizontal'));
+        $content .= html_writer::start_tag('li');
+	$icon = html_writer::tag('i', '', array('class'=>'icon-plane pull-left'));
+	$content .= html_writer::tag('span', $icon.'Navigate');
+	$content .= html_writer::start_tag('ul');
 
-	if (isloggedin()) {
-	    // Home button
-            $content .= html_writer::start_tag('li');
-            $content .= html_writer::tag('a', '<i class="icon-home pull-left"></i>Home', array('href' => "$CFG->wwwroot"));
-            $content .= html_writer::end_tag('li');
+	$content .= $this->navbuttons();
+	   
+	$content .= html_writer::end_tag('li');
+	$content .= html_writer::end_tag('ul');
+	    
+	    //$content .= html_writer::start_tag('ul');
 
-	    // Calendar button
-            $content .= html_writer::start_tag('li');
-            $content .= html_writer::tag('span', '<i class="icon-calendar pull-left"></i>Upcoming', array('href' => "$CFG->wwwroot"));
-            $content .= html_writer::end_tag('li');
-	}
+	    //$this->setup_courses();
 
-	$this->setup_courses();
+	    //include_once($CFG->dirroot.'/calendar/lib.php');
+	    //$days_ahead = 30;
+	    //$cal_items = calendar_get_upcoming($this->user_courses, true, $USER->id, $days_ahead);
 
-	include_once($CFG->dirroot.'/calendar/lib.php');
-	$days_ahead = 30;
-	$cal_items = calendar_get_upcoming($this->user_courses, true, $USER->id, $days_ahead);
+	$content .= html_writer::end_tag('ul');
 	
-
-        $content .= html_writer::end_tag('ul');
         return $content;
     }
 
@@ -715,7 +741,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
             }
 
             $isbranch = ($item->children->count() > 0 || $item->nodetype == navigation_node::NODETYPE_BRANCH || (property_exists($item, 'isexpandable') && $item->isexpandable));
-            $hasicon = (!$isbranch && $item->icon instanceof renderable);
+            $hasicon = (!$sbranch && $item->icon instanceof renderable);
 
             if ($isbranch) {
                 $item->hideicon = true;
