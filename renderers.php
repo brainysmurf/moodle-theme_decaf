@@ -707,6 +707,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 		  $content .= html_writer::start_tag('li');
 		  $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-user pull-left')).'Become Student', array('href'=>$url));
 		  $content .= html_writer::end_tag('li');
+
 		  $content .= html_writer::tag('hr');
 		  }
 		}
