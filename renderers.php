@@ -714,6 +714,10 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	    }
 
 	    $content .= html_writer::start_tag('li');
+	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'My DragonNet', array('href'=>"$CFG->wwwroot/my"));
+	    $content .= html_writer::end_tag('li');
+
+	    $content .= html_writer::start_tag('li');
 	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'Edit Profile', array('href'=>"$CFG->wwwroot/user/editadvanced.php?id=$USER->id&course=1"));
 	    $content .= html_writer::end_tag('li');
 
