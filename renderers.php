@@ -531,18 +531,7 @@ class theme_decaf_core_renderer extends core_renderer {
     protected function render_custom_menu_item(custom_menu_item $menunode) {
         // Required to ensure we get unique trackable id's
         static $submenucount = 0;
-        $content = html_writer::start_tag('li');
-	switch ($menunode->get_text()) {
-	case 'DragonNet': $content .= html_writer::tag('i', '', array('class'=>'icon-location-arrow pull-left')); break;
-	case 'Facilities Bookings': $content .= html_writer::tag('i', '', array('class'=>'icon-ticket pull-left')); break;
-	case 'Surveys': $content .= html_writer::tag('i', '', array('class'=>'icon-tasks pull-left')); break;
-	case 'Directory': $content .= html_writer::tag('i', '', array('class'=>'icon-info-sign pull-left')); break;
-	case 'DragonTV': $content .= html_writer::tag('i', '', array('class'=>'icon-facetime-video pull-left')); break;
-	case 'Help': $content .= html_writer::tag('i', '', array('class'=>'icon-phone pull-left')); break; /* l.;;. */
-	case 'Documents': $content .= html_writer::tag('i', '', array('class'=>'icon-file-alt pull-left')); break;
-	case 'Teaching & Learning': $content .= html_writer::tag('i', '', array('class'=>'icon-magic pull-left')); break;
-	case 'Groups': $content .= html_writer::tag('i', '', array('class'=>'icon-rocket pull-left')); break;
-	}
+        
         if ($menunode->has_children()) {
             // If the child has menus render it as a sub menu
             $submenucount++;
@@ -550,6 +539,7 @@ class theme_decaf_core_renderer extends core_renderer {
             if ($menunode->get_url() === null) {
                 $extra = ' customitem-nolink';
             }
+	    $content = html_writer::start_tag('li');
             $content .= html_writer::start_tag('span', array('class'=>'customitem'.$extra));
             if ($menunode->get_url() !== null) {
                 $content .= html_writer::link($menunode->get_url(), $menunode->get_text(), array('title'=>$menunode->get_title()));
@@ -569,18 +559,39 @@ class theme_decaf_core_renderer extends core_renderer {
                 $content .= $this->render_custom_menu_item($menunode);
             }
             $content .= html_writer::end_tag('ul');
+	    $content .= html_writer::end_tag('li');
+
         } else {
+
             // The node doesn't have children so produce a final menuitem
 
-            if ($menunode->get_url() !== null) {
-                $url = $menunode->get_url();
-            } else {
-                $url = '#';
-            }
-            $content .= html_writer::link($url, $menunode->get_text(), array('title'=>$menunode->get_title(), 'class'=>'customitem-no-children'));
+	        if ($menunode->get_text() === 'hr') {
+		    $content = html_writer::tag('hr', '', array('class'=>'customitem-no-children'));
+	        } else {
+		    $content = html_writer::start_tag('li');
+
+	            switch ($menunode->get_text()) {
+	                case 'DragonNet': $content .= html_writer::tag('i', '', array('class'=>'icon-location-arrow pull-left')); break;
+	                case 'Facilities Bookings': $content .= html_writer::tag('i', '', array('class'=>'icon-ticket pull-left')); break;
+	                case 'Surveys': $content .= html_writer::tag('i', '', array('class'=>'icon-tasks pull-left')); break;
+	                case 'Directory': $content .= html_writer::tag('i', '', array('class'=>'icon-info-sign pull-left')); break;
+	                case 'DragonTV': $content .= html_writer::tag('i', '', array('class'=>'icon-facetime-video pull-left')); break;
+	                case 'Help': $content .= html_writer::tag('i', '', array('class'=>'icon-phone pull-left')); break; /* l.;;. */
+	                case 'Documents': $content .= html_writer::tag('i', '', array('class'=>'icon-file-alt pull-left')); break;
+	                case 'Teaching & Learning': $content .= html_writer::tag('i', '', array('class'=>'icon-magic pull-left')); break;
+	                case 'Groups': $content .= html_writer::tag('i', '', array('class'=>'icon-rocket pull-left')); break;
+  	            }
+
+                    if ($menunode->get_url() !== null) {
+                        $url = $menunode->get_url();
+                    } else {
+                        $url = '#';
+                    }
+                    $content .= html_writer::link($url, $menunode->get_text(), array('title'=>$menunode->get_title(), 'class'=>'customitem-no-children'));
+		    $content .= html_writer::end_tag('li');
+	        }
         }
 
-        $content .= html_writer::end_tag('li');
         // Return the sub menu
         return $content;
     }
