@@ -559,7 +559,7 @@ class theme_decaf_core_renderer extends core_renderer {
 
 	    if ($parent = $menunode->get_parent()) {
 	      // don't use the icon if we're at the top of the chain
-	      if (!$parent->get_text() === 'root') {
+	      if (!($parent->get_text() === 'root')) {
   	          $content .= html_writer::tag('i', '', array('class'=>'pull-right icon-caret-right'));            
 	      }
 	    }
