@@ -693,10 +693,10 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	    $courseid = $this->page->course->id;
 
 	    $context = context_course::instance($courseid);
-	    if (has_capability('moodle/role:switchroles', $context)) {
-	        require_once('../config.php'); 
 
-	        $roles = get_switchable_roles($context);
+	    if (has_capability('moodle/role:switchroles', $context)) {
+
+	      $roles = get_switchable_roles($context);
 		if (!($roles===null)) {
 		
 		  $role = array_filter($roles, "students");
@@ -780,6 +780,10 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	    if ($name === 'My profile settings' || $name === 'Switch role to...') {
 	        continue;
 	    } 
+
+	    if (!($this->page->course->id === '1266') && ($name === 'Site administration')) {
+	        continue;
+	    }
 
             $isbranch = ($item->children->count() > 0 || $item->nodetype == navigation_node::NODETYPE_BRANCH || (property_exists($item, 'isexpandable') && $item->isexpandable));
             $hasicon = (!$sbranch && $item->icon instanceof renderable);
