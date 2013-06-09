@@ -225,7 +225,7 @@ div.moodle-dialogue-base {position:absolute;top:0;left:0;right:0;z-index:150;}
 #page-footer .logininfo{margin:1em 0;}
 
 #back-to-top {position: fixed;bottom: 32px;right: 40px;text-align: center;cursor: pointer;opacity: .5;filter:alpha(opacity=50);display:none;}
-#back-to-top a.arrow {padding: 5px 10px;font-size: 36px;color: #333;background: #EEE;border: 1px solid #CCC;border-bottom: 1px solid #AAA;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;}
+#back-to-top a.arrow {padding: 5px 10px;font-size: 36px;color: #4D63A3;background: #EEE;border: 1px solid #CCC;border-bottom: 1px solid #AAA;-webkit-border-radius: 5px;-moz-border-radius: 5px;border-radius: 5px;}
 #back-to-top a.text {display: block;background: white;visibility: hidden;position: relative;top: 10px;}
 #back-to-top a {text-decoration: none;border: 0;outline: none;}
 /* PerformanceInfo
@@ -299,7 +299,7 @@ body.pagelayout-report #page-content #region-main .region-content {
 
 /* Question bank
 --------------------------*/
-table#categoryquestions .iconcol {width:21px;}4D63A3
+table#categoryquestions .iconcol {width:21px;}
 body#page-question-category.decaf_with_edit_buttons.jsenabled div.box.questioncategories .commands > img.iconsmall {display:none;}
 
 .dnet-btn {font-family:"Tahoma";line-height:1.5em;sans-serif;color:#4D63A3;height:50px;width:150px;margin-bottom:10px;margin-right:5px;cursor:pointer;-moz-border-radius:10px;-webkit-border-radius:10px;-khtml-border-radius:10px;border-radius:10px;border-color:#ddd #fff #fff #ddd;background-color:#eee;}
