@@ -17,9 +17,9 @@
 .decaf-awesome-bar ul, .decaf-awesome-bar li {list-style:none; margin:0; padding:0;}
 
 .decaf-awesome-bar > ul > li {height:10px;float:left;}
-.decaf-awesome-bar > ul > li > span, .decaf-awesome-bar > ul > li > a, .decaf-awesome-bar > ul > li > span.customitem {line-height:30px;padding-left:2px;padding-right:8px;width:88%;}
+.decaf-awesome-bar > ul > li > span, .decaf-awesome-bar > ul > li > a, .decaf-awesome-bar > ul > li > span.customitem {line-height:30px;padding-left:2px;padding-right:8px;width:88%;height:100%;}
 .decaf-awesome-bar li.clickable-with-children > a {padding:0;padding-left:22px;line-height:30px;height:100%;width:70%}
-.decaf-awesome-bar li.clickable-with-children > span {padding-left:22px;line-height:30px;height:100%;width:88%}
+.decaf-awesome-bar li.clickable-with-children > span {padding-left:22px;line-height:30px;height:100%;width:88%;height:100%;}
 .decaf-awesome-bar ul.dropdown ul {display:none; width:225px; z-index:598;}
 .decaf-awesome-bar ul.dropdown li {line-height:30px;height:30px;padding:1px;padding-left:10px;padding-right:10px;position:relative;}
 .decaf-awesome-bar ul.dropdown i {display:inline-block;padding-left:4px;padding-top:1px;width:15px;line-height:30px;}
@@ -27,7 +27,7 @@
 .decaf-awesome-bar ul.dropdown li:hover > ul, .decaf-awesome-bar ul.dropdown li.extended-hover > ul {display:block;position:absolute; left:100%; top:-1px;}
 .decaf-awesome-bar ul.dropdown > li:hover > ul, .decaf-awesome-bar ul.dropdown > li.extended-hover > ul {left:0; top:100%;}
 /*.decaf-awesome-bar img.smallicon {margin-left:2px; margin-right:2px; width:16px; height:30px;} */
-.decaf-awesome-bar span, .decaf-awesome-bar a {line-height:30px;width:88%;}
+.decaf-awesome-bar span, .decaf-awesome-bar a {line-height:30px;width:88%;height:100%;}
 .decaf-awesome-bar ul ul a, .decaf-awesome-bar ul ul span {height:30px; padding-top:1px; padding-bottom:1px;}
 .decaf-awesome-bar a.customitem {padding-left:20px;}
 .decaf-awesome-bar a.customitem-no-children {padding-left:2px;line-height:30px;height:30px; padding-top:1px; padding-bottom:1px;}
@@ -36,7 +36,7 @@ body #dock {top:30px; height:auto; bottom:0px;} /* Start dock at bottom of Aweso
 
 /* Awesomebar - appearance */
 .decaf-awesome-bar {border-bottom: 1px solid #1a1a1a;}
-.topadminsearchform{float:right;padding-top:2px;min-width:150px;padding-bottom:2px;line-height:25px;}
+.topadminsearchform{float:right;padding-top:2px;min-width:225px;padding-bottom:2px;line-height:25px;}
 input#topadminsearchquery{border:1px solid #aaa; -moz-border-radius:10px; -webkit-border-radius:10px; border-radius:10px; background:#fff url([[pix:theme|search_icon]]) no-repeat 2px 1px; width:200px; margin:4px 10px 2px 0; padding:1px 0 0 17px;}
 .decaf-awesome-bar a, .decaf-awesome-bar a:visited, .decaf-awesome-bar a:hover, .decaf-awesome-bar a:link {height:25px;color:#BDBDBD;}
 .decaf-awesome-bar a:hover {background-color:#595959;}
