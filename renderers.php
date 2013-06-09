@@ -142,6 +142,7 @@ class theme_decaf_core_renderer extends core_renderer {
                 if (!$loginpage && $withlinks) {
                     $loggedinas .= " (<a href=\"$loginurl\">".get_string('login').'</a>)';
                 }
+		$loggedinas = 'Guest';
             } else if (is_role_switched($course->id)) { // Has switched roles
                 $rolename = '';
                 if ($role = $DB->get_record('role', array('id'=>$USER->access['rsw'][$context->path]))) {
@@ -473,6 +474,10 @@ class theme_decaf_core_renderer extends core_renderer {
 	if (isloggedin()) {
 	    $content .= html_writer::start_tag('ul');
 
+	    if (isguestuser()) {
+
+	    } else {
+
 	    $courseid = $this->page->course->id;
 
 	    $context = context_course::instance($courseid);
@@ -522,7 +527,7 @@ class theme_decaf_core_renderer extends core_renderer {
 	    $content .= html_writer::end_tag('li');
 
 	    $content .= html_writer::empty_tag('hr');
-
+	    }
 	    $content .= html_writer::start_tag('li');
 	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-signout pull-left')).'Logout', array('href'=>$CFG->wwwroot.'/login/logout.php?sesskey='.sesskey()));
 	    $content .= html_writer::end_tag('li');
