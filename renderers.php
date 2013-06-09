@@ -125,8 +125,8 @@ class theme_decaf_core_renderer extends core_renderer {
             $fullname = fullname($USER, true);
             // Since Moodle 2.0 this link always goes to the public profile page (not the course profile page)
             if ($withlinks) {
-	      $linktitle = get_string('viewprofile');
-	      $username = "<a href=\"$CFG->wwwroot/user/profile.php?id=$USER->id\" title=\"$linktitle\">$fullname</a>";
+	      //$linktitle = get_string('viewprofile');
+	      $username = $fullname;
             } else {
                 $username = $fullname;
             }
@@ -145,13 +145,14 @@ class theme_decaf_core_renderer extends core_renderer {
             } else if (is_role_switched($course->id)) { // Has switched roles
                 $rolename = '';
                 if ($role = $DB->get_record('role', array('id'=>$USER->access['rsw'][$context->path]))) {
-                    $rolename = ': '.role_get_name($role, $context);
+                    $rolename = role_get_name($role, $context);
                 }
                 $loggedinas = get_string('loggedinas', 'moodle', $username).$rolename;
-                if ($withlinks) {
-                    $url = new moodle_url('/course/switchrole.php', array('id'=>$course->id,'sesskey'=>sesskey(), 'switchrole'=>0, 'returnurl'=>$this->page->url->out_as_local_url(false)));
-                    $loggedinas .= '('.html_writer::tag('a', get_string('switchrolereturn'), array('href'=>$url)).')';
-                }
+		$loggedinas = $rolename;
+                //if ($withlinks) {
+                //    $url = new moodle_url('/course/switchrole.php', array('id'=>$course->id,'sesskey'=>sesskey(), 'switchrole'=>0, 'returnurl'=>$this->page->url->out_as_local_url(false)));
+                //    $loggedinas .= '('.html_writer::tag('a', get_string('switchrolereturn'), array('href'=>$url)).')';
+                //}
             } else {
                 $loggedinas = $realuserinfo.get_string('loggedinas', 'moodle', $username);
                 if ($withlinks) {
@@ -451,8 +452,88 @@ class theme_decaf_core_renderer extends core_renderer {
      * @return string
      */
     protected function render_custom_menu(custom_menu $menu) {
+        global $CFG;
+	global $USER;
+
         // If the menu has no children return an empty string
-        if (isloggedin())
+        if (!$menu->has_children()) {
+            return '';
+        }
+
+        $content = html_writer::start_tag('ul', array('class'=>'dropdown dropdown-horizontal'));
+        $content .=  html_writer::start_tag('li');
+	if (isloggedin()) {
+	    $icon = html_writer::tag('i', '', array('class'=>'icon-user pull-left'));
+	} else {
+	    $icon = html_writer::tag('i', '', array('class'=>'icon-signin pull-left'));
+	}
+	$content .= $icon.$this->login_info();
+	
+	// Beginning of SSIS's special user menu
+	if (isloggedin()) {
+	    $content .= html_writer::start_tag('ul');
+
+	    $courseid = $this->page->course->id;
+
+	    $context = context_course::instance($courseid);
+
+	    if (has_capability('moodle/role:switchroles', $context)) {
+
+	      $roles = get_switchable_roles($context);
+		if (!($roles===null)) {
+		    $role = array_filter($roles, "students");
+		    if ($role) {
+		        $role = array_keys($role);
+		        $role = $role[0];
+		        $url = new moodle_url('/course/switchrole.php', array('id'=>$courseid, 'sesskey'=>sesskey(), 'switchrole'=>$role, 'returnurl'=>$this->page->url->out_as_local_url(false)));
+		        $content .= html_writer::start_tag('li');
+		        $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-user pull-left')).'Become Student', array('href'=>$url));
+		        $content .= html_writer::end_tag('li');
+
+		        $content .= html_writer::empty_tag('hr');
+		    }
+		}
+	    } else if (is_role_switched($this->page->course->id)) {
+		  $content .= html_writer::start_tag('li');
+		  $icon = html_writer::tag('i', '', array('class'=>'icon-user pull-left'));
+		  $url = new moodle_url('/course/switchrole.php', array('id'=>$courseid, 'sesskey'=>sesskey(), 'switchrole'=>0, 'returnurl'=>$this->page->url->out_as_local_url(false)));
+		  $content .= html_writer::tag('a', $icon.'Return to normal', array('href'=>$url));
+		  $content .= html_writer::end_tag('li');
+
+		  $content .= html_writer::empty_tag('hr');
+	    }
+
+	    $content .= html_writer::start_tag('li');
+	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'Edit Profile', array('href'=>"$CFG->wwwroot/user/editadvanced.php?id=$USER->id&course=1"));
+	    $content .= html_writer::end_tag('li');
+
+	    $content .= html_writer::start_tag('li');
+	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'Change password', array('href'=>"$CFG->wwwroot/login/change_password.php?id=1"));
+	    $content .= html_writer::end_tag('li');
+
+	    $content .= html_writer::empty_tag('hr');
+
+	    $content .= html_writer::start_tag('li');
+	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-anchor pull-left')).'My DragonNet', array('href'=>"$CFG->wwwroot/my"));
+	    $content .= html_writer::end_tag('li');
+
+	    $content .= html_writer::start_tag('li');
+	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-home pull-left')).'Home (Front Page)', array('href'=>$CFG->wwwroot));
+	    $content .= html_writer::end_tag('li');
+
+	    $content .= html_writer::empty_tag('hr');
+
+	    $content .= html_writer::start_tag('li');
+	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-signout pull-left')).'Logout', array('href'=>$CFG->wwwroot.'/login/logout.php?sesskey='.sesskey()));
+	    $content .= html_writer::end_tag('li');
+
+	    $content .= html_writer::end_tag('ul');  // end user menu
+
+	}
+
+	$content .= html_writer::end_tag('li');
+
+	if (isloggedin()) {
 
 	    $this->setup_courses();
 
@@ -464,23 +545,18 @@ class theme_decaf_core_renderer extends core_renderer {
 	        $this->teachinglearningnode = NULL;
 	        $this->add_to_custom_menu($menu, '', $this->my_courses);
 	        if ($this->teachinglearningnode) {
-	            $this->teachinglearningnode->add('Browse ALL Courses', new moodle_url('/course/category.php', array('id' => 50)), 'Browse ALL Courses');
-	    }
-        }
-  
-        if (!$menu->has_children()) {
-            return '';
-        }
-        // Initialise this custom menu
-        $content = html_writer::start_tag('ul', array('class'=>'dropdown dropdown-horizontal decaf-custom-menu'));
-        // Render each child
-        foreach ($menu->get_children() as $item) {
-            $content .= $this->render_custom_menu_item($item);
-        }
+	           $this->teachinglearningnode->add('Browse ALL Courses', new moodle_url('/course/category.php', array('id' => 50)), 'Browse ALL Courses');
+	       }
+            }
+
+            // Render each child
+            foreach ($menu->get_children() as $item) {
+                $content .= $this->render_custom_menu_item($item);
+            }
+	}
+        $content .= html_writer::end_tag('ul'); // end whole thing
 
         // Close the open tags
-        $content .= html_writer::end_tag('ul');
-        // Return the custom menu
         return $content;
     }
 
@@ -541,23 +617,15 @@ class theme_decaf_core_renderer extends core_renderer {
             }
 	    $content = html_writer::start_tag('li');
 
-	    switch ($menunode->get_text()) {
-	        case 'DragonNet': $content .= html_writer::tag('i', '', array('class'=>'icon-location-arrow pull-left')); break;
-		case 'Facilities Bookings': $content .= html_writer::tag('i', '', array('class'=>'icon-ticket pull-left'));break;
-	        case 'Surveys': $content .= html_writer::tag('i', '', array('class'=>'icon-tasks pull-left')); break;
-	        case 'Directory': $content .= html_writer::tag('i', '', array('class'=>'icon-info-sign pull-left')); break;
-	        case 'DragonTV': $content .= html_writer::tag('i', '', array('class'=>'icon-facetime-video pull-left')); break;
-	        case 'Help': $content .= html_writer::tag('i', '', array('class'=>'icon-phone pull-left')); break;
-	        case 'Documents': $content .= html_writer::tag('i', '', array('class'=>'icon-file-alt pull-left')); break;
-	        case 'Teaching & Learning': $content .= html_writer::tag('i', '', array('class'=>'icon-magic pull-left')); break;
-	        case 'Groups': $content .= html_writer::tag('i', '', array('class'=>'icon-rocket pull-left')); break;
-  	    }
-
             $content .= html_writer::start_tag('span', array('class'=>'customitem'.$extra));
+	    $icon = '';
+	    if ($menunode->get_title()) {
+	        $icon = html_writer::tag('i', '', array('class'=>$menunode->get_title().' pull-left'));
+	    }
             if ($menunode->get_url() !== null) {
-                $content .= html_writer::link($menunode->get_url(), $menunode->get_text(), array('title'=>$menunode->get_title()));
+                $content .= html_writer::link($menunode->get_url(), $icon.$menunode->get_text());
             } else {
-                $content .= $menunode->get_text();
+                $content .= $icon.$menunode->get_text();
             }
 
 	    if ($parent = $menunode->get_parent()) {
@@ -579,16 +647,23 @@ class theme_decaf_core_renderer extends core_renderer {
             // The node doesn't have children so produce a final menuitem
 
 	        if ($menunode->get_text() === 'hr') {
-		    $content = html_writer::tag('hr', '', array('class'=>'customitem-no-children'));
+		    $content = html_writer::empty_tag('hr');
 	        } else {
 		    $content = html_writer::start_tag('li');
+
+                    $content .= html_writer::start_tag('span', array('class'=>'customitem'.$extra));
+	            $icon = '';
+	            if ($menunode->get_title()) {
+	                $icon = html_writer::tag('i', '', array('class'=>$menunode->get_title().' pull-left'));
+	            }
+		    
 
                     if ($menunode->get_url() !== null) {
                         $url = $menunode->get_url();
                     } else {
                         $url = '#';
                     }
-                    $content .= html_writer::link($url, $menunode->get_text(), array('title'=>$menunode->get_title(), 'class'=>'customitem-no-children'));
+                    $content .= html_writer::link($url, $icon.$menunode->get_text(), array('title'=>$menunode->get_title(), 'class'=>'customitem-no-children'));
 		    $content .= html_writer::end_tag('li');
 	        }
         }
@@ -685,69 +760,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
     }
 
     public function settings_search_box() {
-        global $CFG;
-	global $USER;
-        // TODO: Make this a typical profile thing ssis user menu
-	// Calendar button
-        $content .= html_writer::start_tag('ul', array('class'=>'topadminsearchform dropdown dropdown-horizontal'));
-        $content .=  html_writer::start_tag('li');
-	if (isloggedin()) {
-	    $icon = html_writer::tag('i', '', array('class'=>'icon-user pull-left'));
-	} else {
-	    $icon = html_writer::tag('i', '', array('class'=>'icon-signin pull-left'));
-	}
-	$content .= $icon.$this->login_info();
-	
-	// Beginning of SSIS's special user menu
-	$content .= html_writer::start_tag('ul');
-	if (isloggedin()) {
-
-	    $courseid = $this->page->course->id;
-
-	    $context = context_course::instance($courseid);
-
-	    if (has_capability('moodle/role:switchroles', $context)) {
-
-	      $roles = get_switchable_roles($context);
-		if (!($roles===null)) {
-		
-		  $role = array_filter($roles, "students");
-		  if ($role) {
-		  $role = array_keys($role);
-		  $role = $role[0];
-		  $url = new moodle_url('/course/switchrole.php', array('id'=>$courseid, 'sesskey'=>sesskey(), 'switchrole'=>$role, 'returnurl'=>$this->page->url->out_as_local_url(false)));
-		  $content .= html_writer::start_tag('li');
-		  $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-user pull-left')).'Become Student', array('href'=>$url));
-		  $content .= html_writer::end_tag('li');
-
-		  $content .= html_writer::tag('hr');
-		  }
-		}
-	    }
-
-	    $content .= html_writer::start_tag('li');
-	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'My DragonNet', array('href'=>"$CFG->wwwroot/my"));
-	    $content .= html_writer::end_tag('li');
-
-	    $content .= html_writer::start_tag('li');
-	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'Edit Profile', array('href'=>"$CFG->wwwroot/user/editadvanced.php?id=$USER->id&course=1"));
-	    $content .= html_writer::end_tag('li');
-
-	    $content .= html_writer::start_tag('li');
-	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'Change password', array('href'=>"$CFG->wwwroot/login/change_password.php?id=1"));
-	    $content .= html_writer::end_tag('li');
-
-	    $content .= html_writer::tag('hr');
-
-	    $content .= html_writer::start_tag('li');
-	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-signout pull-left')).'Logout', array('href'=>$CFG->wwwroot.'/login/logout.php?sesskey='.sesskey()));
-	    $content .= html_writer::end_tag('li');
-	}
-	$content .= html_writer::end_tag('ul');  // end submenu
-
-	$content .= html_writer::end_tag('li');
-	$content .= html_writer::end_tag('ul');
-	return $content;
+	return '';
     }
 
     public function navigation_tree(global_navigation $navigation) {
@@ -760,9 +773,9 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	//$days_ahead = 30;
 	//$cal_items = calendar_get_upcoming($this->user_courses, true, $USER->id, $days_ahead);
 
-	$content .= html_writer::end_tag('ul');
+	//$content .= html_writer::end_tag('ul');
 	
-        return $content;
+        return '';
     }
 
     protected function navigation_node(navigation_node $node, $attrs=array()) {
@@ -860,33 +873,12 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
     }
 
     public function search_form(moodle_url $formtarget, $searchvalue) {
-      //global $CFG;
-        //$content .= html_writer::start_tag('span', array('id' =>'awesomeNavMenu'));
 
-        //$content .= html_writer::start_tag('li');
         $content = html_writer::start_tag('span', array('class' =>'topadminsearchform'));
-        //$content .= html_writer::empty_tag('img', array('alt' => '', 'src' =>$this->pix_url('user_silhouette', 'theme')));
 	$content .= $this->login_info();
         $content .= html_writer::end_tag('span');
-        //$content .= html_writer::end_tag('li');
 
 	return $content;
-
-        //if (empty($searchvalue)) {
-        //    $searchvalue = 'Search Settings..';
-        //}
-
-        //$content = html_writer::start_tag('form', array('class' => 'topadminsearchform', 'method' => 'get', 'action' => $formtarget));
-        //$content .= html_writer::start_tag('div', array('class' => 'search-box'));
-        //$content .= html_writer::tag('label', s(get_string('searchinsettings', 'admin')), array('for' => 'adminsearchquery', 'class' => 'accesshide'));
-        //$content .= html_writer::empty_tag('input', array('id' => 'topadminsearchquery', 'type' => 'text', 'name' => 'query', 'value' => s($searchvalue),
-	//           'onfocus' => "if(this.value == 'Search Settings..') {this.value = '';}",
-	//          'onblur' => "if (this.value == '') {this.value = 'Search Settings..';}"));
-        //$content .= html_writer::empty_tag('input', array('class'=>'search-go','type'=>'submit', 'value'=>''));
-        //$content .= html_writer::end_tag('div');
-        //$content .= html_writer::end_tag('form');
-
-        //return $content;
     }
 
 }
