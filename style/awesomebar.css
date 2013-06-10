@@ -20,7 +20,7 @@
 .decaf-awesome-bar > ul > li > span, .decaf-awesome-bar > ul > li > a, .decaf-awesome-bar > ul > li > span.customitem {line-height:30px;padding-left:2px;padding-right:8px;width:88%;height:100%;}
 .decaf-awesome-bar li.clickable-with-children > a {padding:0;padding-left:22px;line-height:30px;height:100%;width:70%}
 .decaf-awesome-bar li.clickable-with-children > span {padding-left:22px;line-height:30px;height:100%;width:88%;height:100%;}
-.decaf-awesome-bar ul.dropdown ul {display:none; width:225px; z-index:598;}
+.decaf-awesome-bar ul.dropdown ul {display:none; width:250px; z-index:598;}
 .decaf-awesome-bar ul.dropdown li {line-height:30px;height:30px;padding:1px;padding-left:10px;padding-right:10px;position:relative;}
 .decaf-awesome-bar ul.dropdown i {display:inline-block;padding-left:4px;padding-top:1px;width:15px;line-height:30px;}
 
