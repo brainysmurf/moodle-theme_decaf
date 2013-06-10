@@ -543,8 +543,10 @@ class theme_decaf_core_renderer extends core_renderer {
 	    $this->setup_courses();
 
 	    if (has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM))) {
-	        foreach ($this->my_courses as $category) {
-	            $this->add_category_to_custom_menu_for_admins($menu, $category);
+	        if (!($this->page->course->id === '1266')) {
+	            foreach ($this->my_courses as $category) {
+	                $this->add_category_to_custom_menu_for_admins($menu, $category);
+	            }
 	        }
 	    } else {
 	        $this->teachinglearningnode = NULL;
