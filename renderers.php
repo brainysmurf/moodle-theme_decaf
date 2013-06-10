@@ -390,7 +390,7 @@ class theme_decaf_core_renderer extends core_renderer {
 
     public function setup_courses() {
         if (has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM))) {
-	    $this->user_courses = get_course_category_tree();
+	    $this->my_courses = get_course_category_tree();
 	} else {
             $this->my_courses = get_course_category_tree();
 	    $this->all_courses = $this->my_courses;  // copies it
@@ -543,7 +543,7 @@ class theme_decaf_core_renderer extends core_renderer {
 	    $this->setup_courses();
 
 	    if (has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM))) {
-	        foreach ($mycourses as $category) {
+	        foreach ($this->my_courses as $category) {
 	            $this->add_category_to_custom_menu_for_admins($menu, $category);
 	        }
 	    } else {
