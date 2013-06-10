@@ -627,6 +627,13 @@ class theme_decaf_core_renderer extends core_renderer {
 	    if ($menunode->get_title()) {
 	        $icon = html_writer::tag('i', '', array('class'=>$menunode->get_title().' pull-left'));
 	    }
+
+	    switch ($menunode->get_text()) {
+
+	        case 'Teaching & Learning': $icon = html_writer::tag('i', '', array('class'=>'icon-magic pull-left')); break;
+	        case 'Groups': $icon = html_writer::tag('i', '', array('class'=>'icon-rocket pull-left')); break;
+	    }
+
             if ($menunode->get_url() !== null) {
                 $content .= html_writer::link($menunode->get_url(), $icon.$menunode->get_text());
             } else {
