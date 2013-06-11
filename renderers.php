@@ -405,7 +405,12 @@ class theme_decaf_core_renderer extends core_renderer {
         // We use a sort starting at a high value to ensure the category gets added to the end
         static $sort = 1000;
 	$old_sort = $sort;
-	$node = $menu->add($category->name, new moodle_url('/course/category.php', array('id' =>  $category->id)), NULL, NULL, $old_sort++);
+	if (!($category->parent == '0')) {
+	    $url = new moodle_url('/course/category.php', array('id' =>  $category->id));
+	} else {
+	    $url = NULL;
+	}
+	$node = $menu->add($category->name, $url, NULL, NULL, $old_sort++);
 
         // Add subcategories to the category node by recursivily calling this method.
         $subcategories = $category->categories;
@@ -631,7 +636,6 @@ class theme_decaf_core_renderer extends core_renderer {
 	    }
 
 	    switch ($menunode->get_text()) {
-
 	        case 'Teaching & Learning': $icon = html_writer::tag('i', '', array('class'=>'icon-magic pull-left')); break;
 	        case 'Groups': $icon = html_writer::tag('i', '', array('class'=>'icon-rocket pull-left')); break;
 	        case 'School Life': $icon = html_writer::tag('i', '', array('class'=>'icon-ticket pull-left')); break;
