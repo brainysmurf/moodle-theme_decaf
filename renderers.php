@@ -640,6 +640,8 @@ class theme_decaf_core_renderer extends core_renderer {
 	        case 'Groups': $icon = html_writer::tag('i', '', array('class'=>'icon-rocket pull-left')); break;
 	        case 'School Life': $icon = html_writer::tag('i', '', array('class'=>'icon-ticket pull-left')); break;
 	        case 'Curriculum': $icon = html_writer::tag('i', '', array('class'=>'icon-save pull-left')); break;
+	        case 'Parents': $icon = html_writer::tag('i', '', array('class'=>'icon-info-sign pull-left')); break;
+	        case 'Invisible': $icon = html_writer::tag('i', '', array('class'=>'icon-star-half-empty pull-left')); break;
 	    }
 
             if ($menunode->get_url() !== null) {
