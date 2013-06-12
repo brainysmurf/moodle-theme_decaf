@@ -624,13 +624,10 @@ class theme_decaf_core_renderer extends core_renderer {
             // If the child has menus render it as a sub menu
             $submenucount++;
             $extra = '';
-            if ($menunode->get_url() === null) {
-                $extra = ' customitem-nolink';
-            }
 	    $content = html_writer::start_tag('li');
 
-            $content .= html_writer::start_tag('span', array('class'=>'customitem'.$extra));
-	    $icon = '';
+            $content .= html_writer::start_tag('span', array('class'=>'menuitem'));
+	    $icon = html_writer::tag('i', '', array('class'=>'icon-none pull-left'));
 	    if ($menunode->get_title()) {
 	        $icon = html_writer::tag('i', '', array('class'=>$menunode->get_title().' pull-left'));
 	    }
@@ -651,7 +648,7 @@ class theme_decaf_core_renderer extends core_renderer {
             }
 
 	    if ($parent = $menunode->get_parent()) {
-	      // don't use the icon if we're at the top of the chain
+	      // don't use the arrow icon if we're at the top of the chain
 	      if (!($parent->get_text() === 'root')) {
   	          $content .= html_writer::tag('i', '', array('class'=>'pull-right icon-caret-right'));            
 	      }
@@ -674,7 +671,7 @@ class theme_decaf_core_renderer extends core_renderer {
 		    $content = html_writer::start_tag('li');
 
                     $content .= html_writer::start_tag('span', array('class'=>'customitem'.$extra));
-	            $icon = '';
+	            $icon = html_writer::tag('i', '', array('class'=>'icon-none'));
 	            if ($menunode->get_title()) {
 	                $icon = html_writer::tag('i', '', array('class'=>$menunode->get_title().' pull-left'));
 	            }
@@ -685,7 +682,7 @@ class theme_decaf_core_renderer extends core_renderer {
                     } else {
                         $url = '#';
                     }
-                    $content .= html_writer::link($url, $icon.$menunode->get_text(), array('title'=>$menunode->get_title(), 'class'=>'customitem-no-children'));
+                    $content .= html_writer::link($url, $icon.$menunode->get_text(), array('title'=>$menunode->get_title(), 'class'=>'menuitem'));
 		    $content .= html_writer::end_tag('li');
 	        }
         }
