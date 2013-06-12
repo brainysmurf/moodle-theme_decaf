@@ -51,7 +51,7 @@ input#topadminsearchquery{border:1px solid #aaa; -moz-border-radius:10px; -webki
 
 /* Custom menu */
 #custommenu {position:relative; z-index:998;cursor:default;}
-#custommenu > ul > li > span.customitem, #custommenu > ul > li > a.customitem-no-children {cursor:pointer;line-height:30px;padding:0px 8px 2px 8px; height:30px;}
+#custommenu > ul > li > span.customitem, #custommenu > ul > li > a.customitem-no-children {cursor:pointer;line-height:30px;padding:0px 8px 2px 8px; height:100%;}
 .decaf-awesome-bar span.customitem {padding-left:2px;cursor:default;}
 .decaf-awesome-bar span.customitem > a {display:inline-block;height:100%;width:85%;padding:0;cursor:pointer;}
 .decaf-awesome-bar a.customitem-no-children {cursor:pointer;}

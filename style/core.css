@@ -304,6 +304,8 @@ body#page-question-category.decaf_with_edit_buttons.jsenabled div.box.questionca
 
 .dnet-btn {font-family:"Tahoma",sans-serif;font-size:1.5em;line-height:1.5em;sans-serif;color:#4D63A3;height:3em;width:10em;margin-bottom:10px;margin-right:5px;cursor:pointer;-moz-border-radius:10px;-webkit-border-radius:10px;-khtml-border-radius:10px;border-radius:10px;border-color:#ddd #fff #fff #ddd;background-color:#eee;}
 
+.dnet-bnnr {font-family:"Tahoma",sans-serif;font-size:1.5em;line-height:1.5em;sans-serif;color:#4D63A3;height:3em;width:30em;margin-bottom:10px;margin-right:5px;cursor:pointer;-moz-border-radius:10px;-webkit-border-radius:10px;-khtml-border-radius:10px;border-radius:10px;border-color:#ddd #fff #fff #ddd;background-color:#eee;}
+
 .tabtree  {
 background-color: #fff;
 display:inline;
