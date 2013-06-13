@@ -312,5 +312,7 @@ display:inline;
 overflow:visible;
 }
 
+.course-content div.single-section .tabtree .tabrow0 li { display:inline-block; }
+
 /** Custom CSS **/
 [[setting:customcss]]
