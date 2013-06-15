@@ -19,7 +19,11 @@ class theme_decaf_core_renderer extends core_renderer {
 	    if ($item->title === null) { continue; }
 	    $content .= html_writer::start_tag('li');
 	    if (!($item->title==='')) {
-		$output = $item->title.': '.$item->text;
+	        if ($item->text === strtoupper($item->text)) {
+		  $output = $item->title;
+	        } else {
+		  $output = $item->title.': '.$item->text;
+		}
 	    } else {
 	      $output = $item->text;
 	    }
@@ -67,7 +71,11 @@ class theme_decaf_core_renderer extends core_renderer {
             $content = html_writer::start_tag('li');
 
 	    if (!($item->title==='')) {
-		$output = $item->title.': '.$item->text;
+	        if ($item->text === strtoupper($item->text)) {
+		    $output = $item->title;
+		} else {
+  		    $output = $item->title.': '.$item->text;
+		}
 	    } else {
 	        $output = $item->text;
 	    }
