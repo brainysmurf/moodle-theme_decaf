@@ -522,9 +522,9 @@ class theme_decaf_core_renderer extends core_renderer {
 		  $content .= html_writer::empty_tag('hr');
 	    }
 
-	    //$content .= html_writer::start_tag('li');
-	    //$content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'Edit Profile', array('href'=>"$CFG->wwwroot/user/editadvanced.php?id=$USER->id&course=1"));
-	    //$content .= html_writer::end_tag('li');
+	    $content .= html_writer::start_tag('li');
+	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'Edit Profile', array('href'=>"$CFG->wwwroot/user/editadvanced.php?id=$USER->id&course=1"));
+	    $content .= html_writer::end_tag('li');
 
 	    $content .= html_writer::start_tag('li');
 	    $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'Change password', array('href'=>"$CFG->wwwroot/login/change_password.php?id=1"));
