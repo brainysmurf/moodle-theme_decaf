@@ -441,7 +441,7 @@ class theme_decaf_core_renderer extends core_renderer {
 
 	    if ($a->name == 'Invisible') { continue; }
 
-	    $node = $menu->add($icon.$a->name, $categories_no_click, NULL, NULL, $a->sortorder);
+	    $node = $menu->add($a->name, $categories_no_click, NULL, NULL, $a->sortorder);
 	    if ($a->name == 'Teaching & Learning') {
 	        $this->teachinglearningnode = $node;
 	    }
@@ -841,7 +841,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 	    }
 
             $isbranch = ($item->children->count() > 0 || $item->nodetype == navigation_node::NODETYPE_BRANCH || (property_exists($item, 'isexpandable') && $item->isexpandable));
-            $hasicon = (!$sbranch && $item->icon instanceof renderable);
+            $hasicon = (!$isbranch && $item->icon instanceof renderable);
 
             if ($isbranch) {
                 $item->hideicon = true;
