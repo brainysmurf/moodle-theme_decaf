@@ -1,7 +1,5 @@
 <?php
 
-include_once 'calendar/lib.php';
-
 class theme_decaf_core_renderer extends core_renderer {
 
     protected $really_editing = false;
@@ -451,7 +449,7 @@ class theme_decaf_core_renderer extends core_renderer {
             $this->add_to_custom_menu($node, $a->name, $a->categories);
 	    
             foreach ($a->courses as $course) {
-	      $node->add($icon.$course->fullname, new moodle_url('/course/view.php', array('id' => $course->id)), $course->fullname);
+	      $node->add($course->fullname, new moodle_url('/course/view.php', array('id' => $course->id)), $course->fullname);
             }
         }
 
@@ -632,7 +630,6 @@ class theme_decaf_core_renderer extends core_renderer {
         if ($menunode->has_children()) {
             // If the child has menus render it as a sub menu
             $submenucount++;
-            $extra = '';
 	    $content = html_writer::start_tag('li');
 
             $content .= html_writer::start_tag('span', array('class'=>'menuitem'));
@@ -679,7 +676,7 @@ class theme_decaf_core_renderer extends core_renderer {
 	        } else {
 		    $content = html_writer::start_tag('li');
 
-                    $content .= html_writer::start_tag('span', array('class'=>'customitem'.$extra));
+                    $content .= html_writer::start_tag('span', array('class'=>'customitem'));
 	            $icon = html_writer::tag('i', '', array('class'=>'icon-none'));
 	            if ($menunode->get_title()) {
 	                $icon = html_writer::tag('i', '', array('class'=>$menunode->get_title().' pull-left'));
