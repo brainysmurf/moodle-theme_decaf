@@ -647,22 +647,20 @@ class theme_decaf_core_renderer extends core_renderer {
 	        case 'Invisible': $icon = html_writer::tag('i', '', array('class'=>'icon-star-half-empty pull-left')); break;
 	    }
 
+	    // Now we need to process whether to conver to a link and whether to append a right caret
             if ($menunode->get_url() !== null ) {
-	        // We need to add a link, but let's do this the smart way, shall we?
 	        $addcaret = '';
-	        if ($parent = $menunode->get_parent()) {
-  		    // Add the caret at the end, but only if we're not a root parent
-		    if (!($parent->get_text() === 'root')) {
-		      $addcaret = html_writer::tag('i', '', array('class'=>'pull-right icon-caret-right'));
+	        if ($parent = $menunode->get_parent()) {   
+		    if (!($parent->get_text() === 'root')) {   // filter out roots, so top level is ignored
+		        $addcaret = html_writer::tag('i', '', array('class'=>'pull-right icon-caret-right'));
 		    }
 	        }
                 $content .= html_writer::link($menunode->get_url(), $icon.$menunode->get_text().$addcaret);
             } else {
 	        $addcaret = '';
 	        if ($parent = $menunode->get_parent()) {
-  		    // Add the caret at the end, but only if we're not a root parent
-		    if (!($parent->get_text() === 'root')) {
-		      $addcaret = html_writer::tag('i', '', array('class'=>'pull-right icon-caret-right'));
+		    if (!($parent->get_text() === 'root')) {   // filter out roots, so top level is ignored
+		        $addcaret = html_writer::tag('i', '', array('class'=>'pull-right icon-caret-right'));
 		    }
 	        }
                 $content .= $icon.$menunode->get_text().$addcaret;
@@ -677,27 +675,27 @@ class theme_decaf_core_renderer extends core_renderer {
 
         } else {
 
-            // The node doesn't have children so produce a final menuitem
+	    // The node doesn't have children so produce a leaf
 
-	        if ($menunode->get_text() === 'hr') {
-		    $content = html_writer::empty_tag('hr');
-	        } else {
-		    $content = html_writer::start_tag('li');
+	    if ($menunode->get_text() === 'hr') {
+	        $content = html_writer::empty_tag('hr');
+	    } else {
+		$content = html_writer::start_tag('li');
 
-	            $icon = html_writer::tag('i', '', array('class'=>'icon-none'));
-	            if ($menunode->get_title()) {
-	                $icon = html_writer::tag('i', '', array('class'=>$menunode->get_title().' pull-left'));
-	            }
+	        $icon = html_writer::tag('i', '', array('class'=>'icon-none'));
+	        if ($menunode->get_title()) {
+	            $icon = html_writer::tag('i', '', array('class'=>$menunode->get_title().' pull-left'));
+	        }
 		    
 
-                    if ($menunode->get_url() !== null) {
-                        $url = $menunode->get_url();
-                    } else {
-                        $url = '#';
-                    }
-                    $content .= html_writer::link($url, $icon.$menunode->get_text(), array('title'=>$menunode->get_title()));
-		    $content .= html_writer::end_tag('li');
-	        }
+                if ($menunode->get_url() !== null) {
+                    $url = $menunode->get_url();
+                } else {
+                    $url = '#';
+                }
+                $content .= html_writer::link($url, $icon.$menunode->get_text(), array('title'=>$menunode->get_title()));
+		$content .= html_writer::end_tag('li');
+	    }
         }
 
         // Return the sub menu
