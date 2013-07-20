@@ -647,18 +647,27 @@ class theme_decaf_core_renderer extends core_renderer {
 	        case 'Invisible': $icon = html_writer::tag('i', '', array('class'=>'icon-star-half-empty pull-left')); break;
 	    }
 
-            if ($menunode->get_url() !== null) {
-                $content .= html_writer::link($menunode->get_url(), $icon.$menunode->get_text());
+            if ($menunode->get_url() !== null ) {
+	        // We need to add a link, but let's do this the smart way, shall we?
+	        $addcaret = '';
+	        if ($parent = $menunode->get_parent()) {
+  		    // Add the caret at the end, but only if we're not a root parent
+		    if (!($parent->get_text() === 'root')) {
+		      $addcaret = html_writer::tag('i', '', array('class'=>'pull-right icon-caret-right'));
+		    }
+	        }
+                $content .= html_writer::link($menunode->get_url(), $icon.$menunode->get_text().$addcaret);
             } else {
-                $content .= $icon.$menunode->get_text();
+	        $addcaret = '';
+	        if ($parent = $menunode->get_parent()) {
+  		    // Add the caret at the end, but only if we're not a root parent
+		    if (!($parent->get_text() === 'root')) {
+		      $addcaret = html_writer::tag('i', '', array('class'=>'pull-right icon-caret-right'));
+		    }
+	        }
+                $content .= $icon.$menunode->get_text().$addcaret;
             }
 
-	    if ($parent = $menunode->get_parent()) {
-	      // don't use the arrow icon if we're at the top of the chain
-	      if (!($parent->get_text() === 'root')) {
-  	          $content .= html_writer::tag('i', '', array('class'=>'pull-right icon-caret-right'));            
-	      }
-	    }
             $content .= html_writer::start_tag('ul');
             foreach ($menunode->get_children() as $menunode) {
                 $content .= $this->render_custom_menu_item($menunode);

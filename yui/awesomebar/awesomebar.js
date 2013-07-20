@@ -10,7 +10,7 @@ var AwesomeBar = function() {
 AwesomeBar.prototype = {
     prev : [],
     initializer : function(config) {
-        Y.all('.decaf-awesome-bar ul.dropdown li').each(this.enhanceAwesomeBar, this);
+        //Y.all('.decaf-awesome-bar ul.dropdown li > a').each(this.enhanceAwesomeBar, this);
         //Y.all('.decaf-awesome-bar ul.dropdown li.clickable-with-children > a').each(this.enhanceAwesomeBar, this);
     },
     enhanceAwesomeBar : function(menuitem) {
@@ -64,7 +64,7 @@ AwesomeBar.prototype = {
         }, this, menuitem);
         menuitem.on('mouseout', function(e, item) {
             if (item.hovertimer) window.clearTimeout(item.hovertimer);
-            item.hovertimer = window.setTimeout(function(){item.removeClass('extended-hover')}, 50);
+            item.hovertimer = window.setTimeout(function(){item.removeClass('extended-hover')}, 500);
         }, this, menuitem);
     },
     hover : function(e, submenu) {
