@@ -10,8 +10,6 @@ var AwesomeBar = function() {
 AwesomeBar.prototype = {
     prev : [],
     initializer : function(config) {
-        Y.all('.decaf-awesome-bar ul.dropdown li > span').each(this.enhanceAwesomeBar, this);
-        Y.all('.decaf-awesome-bar ul.dropdown li.clickable-with-children > a').each(this.enhanceAwesomeBar, this);
     },
     enhanceAwesomeBar : function(menuitem) {
         var level = 0;
