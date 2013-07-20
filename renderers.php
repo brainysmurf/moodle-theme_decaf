@@ -632,9 +632,9 @@ class theme_decaf_core_renderer extends core_renderer {
             $submenucount++;
 	    $content = html_writer::start_tag('li');
 
-            $content .= html_writer::start_tag('span', array('class'=>'menuitem'));
 	    $icon = html_writer::tag('i', '', array('class'=>'icon-none pull-left'));
 	    if ($menunode->get_title()) {
+	        // This adds the feature of using the title for the icon
 	        $icon = html_writer::tag('i', '', array('class'=>$menunode->get_title().' pull-left'));
 	    }
 
@@ -659,7 +659,6 @@ class theme_decaf_core_renderer extends core_renderer {
   	          $content .= html_writer::tag('i', '', array('class'=>'pull-right icon-caret-right'));            
 	      }
 	    }
-            $content .= html_writer::end_tag('span');
             $content .= html_writer::start_tag('ul');
             foreach ($menunode->get_children() as $menunode) {
                 $content .= $this->render_custom_menu_item($menunode);
@@ -676,7 +675,6 @@ class theme_decaf_core_renderer extends core_renderer {
 	        } else {
 		    $content = html_writer::start_tag('li');
 
-                    $content .= html_writer::start_tag('span', array('class'=>'customitem'));
 	            $icon = html_writer::tag('i', '', array('class'=>'icon-none'));
 	            if ($menunode->get_title()) {
 	                $icon = html_writer::tag('i', '', array('class'=>$menunode->get_title().' pull-left'));
@@ -688,7 +686,7 @@ class theme_decaf_core_renderer extends core_renderer {
                     } else {
                         $url = '#';
                     }
-                    $content .= html_writer::link($url, $icon.$menunode->get_text(), array('title'=>$menunode->get_title(), 'class'=>'menuitem'));
+                    $content .= html_writer::link($url, $icon.$menunode->get_text(), array('title'=>$menunode->get_title()));
 		    $content .= html_writer::end_tag('li');
 	        }
         }
@@ -704,9 +702,6 @@ class theme_decaf_core_renderer extends core_renderer {
         if ($item->icon instanceof renderable && !$item->hideicon) {
                 $icon = $this->render($item->icon);
             $content = $icon.$content; // use CSS for spacing of icons
-        }
-        if ($item->helpbutton !== null) {
-            $content = trim($item->helpbutton).html_writer::tag('span', $content, array('class'=>'clearhelpbutton'));
         }
         if ($content === '') {
             return '';
@@ -730,6 +725,7 @@ class theme_decaf_core_renderer extends core_renderer {
             $content = html_writer::link($item->action, $content, $attributes);
 
         } else if (is_string($item->action) || empty($item->action)) {
+	    echo($item->action);
             $attributes = array();
             if ($title !== '') {
                 $attributes['title'] = $title;
@@ -737,7 +733,10 @@ class theme_decaf_core_renderer extends core_renderer {
             if ($item->hidden) {
                 $attributes['class'] = 'dimmed_text';
             }
-            $content = html_writer::tag('span', $content, $attributes);
+	    // what about icons here?
+	    $icon = html_writer::tag('i', '', array('class'=>'icon-none'));
+	    $content = $icon.$content;
+            //$content = html_writer::tag('span', $content, $attributes);
         }
 
         return $content;
@@ -883,7 +882,7 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
 
             if($isbranch && !($item->parent->parent==null)) {
 	      // TODO: Have to do the ugly thing here and take out the last part of the </a> tag for it to work better
-	        $content = html_writer::tag('li', $content.'<i class="pull-right icon-caret-right"></i>', array('class' => 'clickable-with-children'));
+	        $content = html_writer::tag('li', $content.'<i class="pull-right icon-caret-right"></i>');
             } else {
                 $content = html_writer::tag('li', $content);
             }
