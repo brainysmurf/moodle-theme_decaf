@@ -65,6 +65,7 @@ class theme_decaf_core_renderer extends core_renderer {
 
 	    if ($item->title === null) { continue; }
 	    if ($item->title === 'Invisible') { continue; }
+	    if ($item->title === 'DragonNet Frontpage') { continue; }
 
             //$item->hideicon = true;
             $content = html_writer::start_tag('li');
