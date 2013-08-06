@@ -758,10 +758,6 @@ class theme_decaf_core_renderer extends core_renderer {
             if ($item->hidden) {
                 $attributes['class'] = 'dimmed_text';
             }
-	    // what about icons here?
-	    $icon = html_writer::tag('i', '', array('class'=>'icon-none'));
-	    $content = $icon.$content;
-            //$content = html_writer::tag('span', $content, $attributes);
         }
 
         return $content;
