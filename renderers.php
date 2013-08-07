@@ -4,6 +4,13 @@ class theme_decaf_core_renderer extends core_renderer {
 
     protected $really_editing = false;
 
+    public function header() {
+      if ((!(strpos($this->page->heading, '-&gt')===False)) & ($this->page->cm)) {
+	  $this->page->set_heading($this->page->cm->name);
+      }
+      return parent::header();
+    }
+
     public function navbuttons() {
         global $CFG;
 	$items = $this->page->navbar->get_items();
@@ -811,8 +818,6 @@ class theme_decaf_topsettings_renderer extends plugin_renderer_base {
     public function navigation_tree(global_navigation $navigation) {
         global $CFG;
 	global $USER;
-
-	    
 
 	//include_once($CFG->dirroot.'/calendar/lib.php');
 	//$days_ahead = 30;
