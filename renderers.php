@@ -62,7 +62,8 @@ class theme_decaf_core_renderer extends core_renderer {
         // Iterate the navarray and display each node
         $itemcount = count($items);
         $separator = get_separator();
-	$htmlblocks[] = html_writer::tag('a', 'Home', array('href'=>$CFG->wwwroot));
+	$home = html_writer::tag('a', 'Home', array('href'=>$CFG->wwwroot));
+	$htmlblocks[] = html_writer::tag('li', $home);
         for ($i=0;$i < $itemcount;$i++) {
             $item = $items[$i];
 	    if (!$item->parent) { 
@@ -587,8 +588,9 @@ class theme_decaf_core_renderer extends core_renderer {
 	        $this->teachinglearningnode = NULL;
 	        $this->add_to_custom_menu($menu, '', $this->my_courses);
 	        if ($this->teachinglearningnode) {
-	           $this->teachinglearningnode->add('Browse ALL Courses', new moodle_url('/course/category.php', array('id' => 50)), 'Browse ALL Courses');
-	        } // if $this->
+		   $this->teachinglearningnode->add('Browse DragonNet Classes', new moodle_url('/course/category.php', array('id' => 50)), 'Browse ALL Courses');
+		} // if this->teachinglearningnode
+		// TODO: Add a Teaching & Learning mneu item and add "Browse ALL Courses" to that!
             } // if has_capability
 
             // Render each child
@@ -613,7 +615,6 @@ class theme_decaf_core_renderer extends core_renderer {
     protected function render_pix_icon(pix_icon $icon) {
         $attributes = $icon->attributes;
         $attributes['src'] = $this->pix_url($icon->pix, $icon->component);
-	//echo $icon->pix.' : ';
 	switch ($icon->pix) {
 	case 'i/navigationitem': return html_writer::tag('i', '', array('class'=>'icon-cog pull-left')); break;
 	case 'i/edit': return html_writer::tag('i', '', array('class'=>'icon-edit pull-left')); break;
@@ -757,7 +758,6 @@ class theme_decaf_core_renderer extends core_renderer {
             $content = html_writer::link($item->action, $content, $attributes);
 
         } else if (is_string($item->action) || empty($item->action)) {
-	    echo($item->action);
             $attributes = array();
             if ($title !== '') {
                 $attributes['title'] = $title;
