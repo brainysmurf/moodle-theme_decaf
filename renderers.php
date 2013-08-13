@@ -709,7 +709,7 @@ class theme_decaf_core_renderer extends core_renderer {
 		$content = html_writer::start_tag('li');
 	        $icon = html_writer::tag('i', '', array('class'=>'icon-none'));
 
-	        if (($menunode->get_title()) & (strpos($menunode->get_title(), 'icon-') === 0)) {
+	        if ($menunode->get_title()) {
 		    $icon = html_writer::tag('i', '', array('class'=>$menunode->get_title().' pull-left'));
 	        }
 
