@@ -666,7 +666,7 @@ class theme_decaf_core_renderer extends core_renderer {
 
 	    switch ($menunode->get_text()) {
 	        case 'Teaching & Learning': $icon = html_writer::tag('i', '', array('class'=>'icon-magic pull-left')); break;
-	        case 'Groups': $icon = html_writer::tag('i', '', array('class'=>'icon-rocket pull-left')); break;
+	        case 'Activities': $icon = html_writer::tag('i', '', array('class'=>'icon-rocket pull-left')); break;
 	        case 'School Life': $icon = html_writer::tag('i', '', array('class'=>'icon-ticket pull-left')); break;
 	        case 'Curriculum': $icon = html_writer::tag('i', '', array('class'=>'icon-save pull-left')); break;
 	        case 'Parents': $icon = html_writer::tag('i', '', array('class'=>'icon-info-sign pull-left')); break;
@@ -707,12 +707,11 @@ class theme_decaf_core_renderer extends core_renderer {
 	        $content = html_writer::empty_tag('hr');
 	    } else {
 		$content = html_writer::start_tag('li');
-
 	        $icon = html_writer::tag('i', '', array('class'=>'icon-none'));
-	        if ($menunode->get_title()) {
-	            $icon = html_writer::tag('i', '', array('class'=>$menunode->get_title().' pull-left'));
+
+	        if (($menunode->get_title()) & (strpos($menunode->get_title(), 'icon-') === 0)) {
+		    $icon = html_writer::tag('i', '', array('class'=>$menunode->get_title().' pull-left'));
 	        }
-		    
 
                 if ($menunode->get_url() !== null) {
                     $url = $menunode->get_url();
