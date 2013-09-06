@@ -219,10 +219,13 @@ div.moodle-dialogue-base {position:absolute;top:0;left:0;right:0;z-index:150;}
 .mform .fitem .felement { margin-left: 31%; margin-right: 0px; width: 68%;}
 .mform .fitem fieldset.felement{float:left;}
 .mform .fitem .fitemtitle{width:30%;}
+
 .form-input {text-align:left;}
-.loginbox .loginform .form-input {width: 60%;}
-.form-label {width:10px;}
-.loginbox .loginform .form-label {
+/*.loginbox .loginform .form-input {width: 60%;}
+.form-label {width:10px;}*/
+
+
+/*.loginbox .loginform .form-label {
     direction: rtl;
     float: left;
     text-align: right;
@@ -234,7 +237,102 @@ div.moodle-dialogue-base {position:absolute;top:0;left:0;right:0;z-index:150;}
     margin-right: 1px;
     margin-top:5px;
     font-size:0.75em;
-}
+}*/
+
+	/* Login Form */
+	
+	.loginpanel {
+		width:75%;
+		max-width:500px;
+		margin:auto;
+	}
+		.login-reminder {
+			margin:0 auto 0;
+			min-height:50px;
+			line-height: 22px;
+			padding: 15px;
+			background-color:#fff;
+			border-top: 2px solid #4D63A3; 
+			border-bottom: 2px solid #4D63A3;
+		}
+			.login-reminder icon { margin-top: -4px; }
+		
+	.loginform-input-row {
+		padding: 0 0 0 25px;
+		position: relative;
+		margin:15px 0;
+	}
+	
+		/* form icons */
+		.loginform-input-row icon {
+			position: absolute;
+			top: 14px;
+			left: 2px;
+		}
+	
+		/* Username & Password */
+		.loginform input[type=text],
+		.loginform input[type=password],
+		.loginform input[type=submit],
+		.loginform button {
+			display:block;
+			-webkit-border-radius:2px;
+			-moz-border-radius:2px;
+			border-radius:2px;
+			border:1px #666 solid;
+			font-size:16px;
+			line-height:1.5em;
+			padding:10px;
+			width:100%;			
+			/* to have 100% width with padding */
+			-moz-box-sizing:border-box;
+			-webkit-box-sizing:border-box;
+			box-sizing:border-box;
+		}
+		
+		.loginform input[type=submit],
+		.loginform button {
+			cursor:pointer;
+		}
+		
+	.loginform-remember-row {
+		margin:15px 0;
+		text-align:center;
+	}
+	
+	.loginform #login-guest,
+	.loginform #login-forgotten {
+		margin-top:30px;
+		text-align:center;
+		width:50%;
+		/* to have % width with padding */
+		-moz-box-sizing:border-box;
+		-webkit-box-sizing:border-box;
+		box-sizing:border-box;
+	}
+	
+		.loginform h4 {
+			font-size:12px;
+			font-weight:bold;
+			min-height:30px;
+		}
+	
+	.loginform #login-guest {
+		float:left;
+		padding-right:10px;
+	}
+		.loginform #login-guest p {
+			margin:5px 0 0 0;
+			font-size:12px;
+		}
+	
+	.loginform #login-forgotten {
+		float:right;
+		padding-left:10px;
+	}
+	
+
+
 /* Footer
 -------------------------- */
 #page-footer{width:100%;margin:25px 0;}
