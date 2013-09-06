@@ -4,6 +4,15 @@ class theme_decaf_core_renderer extends core_renderer {
 
     protected $really_editing = false;
 
+	private $cache;
+
+	function __construct( moodle_page $page, $target )
+	{
+		$this->cache = cache::make_from_params(cache_store::MODE_SESSION, 'theme_decaf', 'decafcache');
+		parent::__construct( $page , $target );
+	}
+
+
     public function header() {
       if ((!(strpos($this->page->heading, '-&gt')===False)) & ($this->page->cm)) {
 	  $this->page->set_heading($this->page->cm->name);
@@ -317,112 +326,158 @@ class theme_decaf_core_renderer extends core_renderer {
     }
 
 
-    protected function seek(&$branch) {
-      foreach ($branch as $b) {
-	  if ($b->categories) {
-	      $this->seek($b->categories);
-	  }
+       
 
-        foreach ( $b->courses as $course ) {
-	    if (! array_key_exists($course->id, $this->user_courses)) {
-	        unset($b->courses[$course->id]);
-	    }
-        }
 
-      }
+
+    public function setup_courses()
+    {
+    	//Show all courses to admins
+        if ( has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM)) )
+		{
+		    $this->my_courses = get_course_category_tree();
+		}
+		else
+		{
+		
+			//Check if the courses are cached in the session cache
+			if ( $courses = $this->cache->get('myCourses') )
+			{
+				$this->my_courses = $courses;		
+				return;
+			}
+		
+			//Load all categories (and courses within them)
+			$allCategories = get_course_category_tree();
+            
+			//Get courses user is enrolled in
+            $usersCourses = enrol_get_my_courses('category', 'visible DESC, fullname ASC');
+            
+            //Now filter all the categories to remove courses user isn't enrolled in
+            $myCategories = $allCategories;
+            
+		    $this->remove_unenrolled_courses( $myCategories , $usersCourses );
+		    $this->remove_empty_categories( $myCategories );
+	    	$this->collapse_menu( $myCategories );
+	    	$this->my_courses = $myCategories;
+	    	
+	    	//Save in the cache
+			$this->cache->set('myCourses',$this->my_courses);	
+		}
     }
+    
+    //Removes categories/courses user is not enrolled in
+	protected function remove_unenrolled_courses( &$branch , $usersCourses )
+	{
+		foreach ( $branch as $b )
+		{
+			if ( $b->categories )
+			{
+				$this->remove_unenrolled_courses($b->categories , $usersCourses);
+			}
 
-    protected function ridof(&$branch) {
-        for ($i = 0, $size = count($branch); $i < $size; $i++) {
-	    if (isset($branch[$i]->categories) && ! empty($branch[$i]->categories)) {
-	        $this->ridof($branch[$i]->categories);
-	    }
-	    if (isset($branch[$i]->depth) && empty($branch[$i]->courses) && empty($branch[$i]->categories)) {
-	        unset($branch[$i]);
-            }
-	}
-    }
-
-    protected function howmany($branch) {
-        $this_total = 0;
-	if (! $branch) { return 0; }
-        foreach ($branch as $b) {
-	    if ($b->courses) {
-	        $this_total += count($b->courses);
-	    }
-	    if ($b->categories) {
-		$this_total += $this->howmany($b->categories); 
-	    }
-        }
-	return $this_total;
-    }
-
-    protected function return_courses($branch) {
-      if (! $branch) { return $branch; }
-        $these_courses = array();
-	foreach ($branch as $b) {
-            if ($b->categories) {
-	        foreach ($this->return_courses($b->categories) as $course) {
-		    $these_courses[$course->id] = $course;
-		    $these_courses[$course->id]->category = 50;
+        	foreach ( $b->courses as $course )
+        	{
+	    		if ( !array_key_exists($course->id, $usersCourses) )
+	    		{
+	        		unset($b->courses[$course->id]);
+		    	}
 	        }
-	    }
-	    if ($b->courses) {
-	        foreach ($b->courses as $course) {
-	            $these_courses[$course->id] = $course;
-		    $these_courses[$course->id]->category = 50;
-	        }
+		}
+      
+    }
+
+	//Removes categories with no courses in them
+    protected function remove_empty_categories( &$branch )
+    {
+        for ( $i = 0, $size = count($branch); $i < $size; $i++ )
+        {
+		    if (isset($branch[$i]->categories) && ! empty($branch[$i]->categories))
+		    {
+	        	$this->remove_empty_categories($branch[$i]->categories);
+		    }
+		    if ( isset($branch[$i]->depth) && empty($branch[$i]->courses) && empty($branch[$i]->categories) )
+		    {
+	        	unset($branch[$i]);
             }
-	}
-	return $these_courses;
+		}
     }
 
-    protected function spellout(&$branch) {
-        global $DB;
-        $results = $DB->get_records_sql('SELECT * FROM ssismdl_course_categories WHERE parent = ? ORDER BY sortorder', array('0'));
 
-	// First, need to get the index of the smart tab
-	$keys = array_keys($results);
-	$smart_tab_index = null;
-        for ($i = 0; $i < count($results); $i++) {
-	  $this_one = $results[$keys[$i]];
-	  if ($this_one->name == 'Teaching & Learning') {
-	      $smart_tab_index = $i;
-	  }
+    protected function collapse_menu( &$branch )
+    {
+    	foreach ( $branch as &$b )
+    	{
+    		if ( $b->name != 'Teaching & Learning' )
+    		{
+    			continue;
+    		}
+
+			//Count how many actual courses are in this tab
+			$courses = $this->count_courses($b->categories);
+			
+			if ( $courses <= 20 )
+			{
+				//Collapse into a list showing just the courses, instead of the categories
+				$b->courses = $this->return_courses( array($b) );
+				$b->categories = array();
+			}
+    	}
+    }
+    
+    //returns how many courses in a thingy
+	protected function count_courses( $branch )
+	{
+		$this_total = 0;
+		if ( !$branch ) { return 0; }
+        foreach ($branch as $b)
+        {
+	    	if ($b->courses)
+	    	{
+	        	$this_total += count($b->courses);
+		    }
+		    if ( $b->categories )
+		    {
+				$this_total += $this->count_courses($b->categories); 
+	    	}
         }
-	
-	$maximumnumber = 20;
-
-	if (isset($smart_tab_index) && array_key_exists($smart_tab_index, $branch)) {
-	    $smart_tab_branch = array($branch[$smart_tab_index]);
-	} else {
-	    $smart_tab_branch = NULL;
-	}
-        if ($smart_tab_branch && $this->howmany($smart_tab_branch) <= 20) {
-	    $branch[$smart_tab_index]->courses = $this->return_courses($smart_tab_branch);
-	    $branch[$smart_tab_index]->categories = array();
-	}
+		return $this_total;
+    }
+    
+    //Takes all the courses out of categories and returns and array just the courses
+    protected function return_courses($branch)
+    {
+		if ( !$branch ) { return; }
+		$these_courses = array();
+		foreach ($branch as $b)
+		{
+            if ($b->categories)
+            {
+	        	foreach ($this->return_courses($b->categories) as $course)
+	        	{
+				    $these_courses[$course->id] = $course;
+				    $these_courses[$course->id]->category = 50;
+		        }
+		    }
+	    	if ($b->courses)
+	    	{
+	        	foreach ($b->courses as $course)
+	        	{
+	            	$these_courses[$course->id] = $course;
+				    $these_courses[$course->id]->category = 50;
+	    	    }
+            }
+		}
+		return $these_courses;
     }
 
-    public function setup_courses() {
-        if (has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM))) {
-	    $this->my_courses = get_course_category_tree();
-	} else {
-            $this->my_courses = get_course_category_tree();
-	    $this->all_courses = $this->my_courses;  // copies it
-            $this->user_courses = enrol_get_my_courses('category', 'visible DESC, fullname ASC');
-	    $this->seek($this->my_courses);
-	    $this->ridof($this->my_courses);
-	    $this->spellout($this->my_courses);
-	}
-    }
+    
+    
+    
 
-    static function in_teaching_learning($element) {
-        if ($element->name == 'Teaching & Learning') {
-	    return true;
-        } else {
-	    return false;
-	}
+    static function in_teaching_learning($element)
+    {
+        return $element->name == 'Teaching & Learning';
     }
 
     public function setup_guest_courses() {
@@ -485,59 +540,70 @@ class theme_decaf_core_renderer extends core_renderer {
      * @param custom_menu $menu
      * @return string
      */
-    protected function render_custom_menu(custom_menu $menu) {
+    protected function render_custom_menu( custom_menu $menu )
+    {
         global $CFG;
-	global $USER;
+		global $USER;
 
         // If the menu has no children return an empty string
-        if (!$menu->has_children()) {
+        if ( !$menu->has_children() )
+        {
             return '';
         }
 
         $content = html_writer::start_tag('ul', array('class'=>'dropdown dropdown-horizontal'));
 
-	// Beginning of SSIS's special user menu
-        $content .=  html_writer::start_tag('li');
-	if (isloggedin()) {
-	    $icon = html_writer::tag('i', '', array('class'=>'icon-user pull-left'));
-	} else {
-	    $icon = html_writer::tag('i', '', array('class'=>'icon-signin pull-left'));
-	} //isloggedin
-	$content .= $icon.$this->login_info();
-	
-	if (isloggedin()) {
-	    $content .= html_writer::start_tag('ul');
-	    if (isguestuser()) {
-	        // Any special items for guest users??
-	    } else {
-  	        $courseid = $this->page->course->id;
-	        $context = context_course::instance($courseid);
+			$loggedIn = isloggedin();
 
-	        if (has_capability('moodle/role:switchroles', $context)) {
-	            $roles = get_switchable_roles($context);
-		    if (!($roles===null)) {
-		        $role = array_filter($roles, "students");
-		        if ($role) {
-		            $role = array_keys($role);
-		            $role = $role[0];
-		            $url = new moodle_url('/course/switchrole.php', array('id'=>$courseid, 'sesskey'=>sesskey(), 'switchrole'=>$role, 'returnurl'=>$this->page->url->out_as_local_url(false)));
-		            $content .= html_writer::start_tag('li');
-		            $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-user pull-left')).'Become Student', array('href'=>$url));
-		            $content .= html_writer::end_tag('li');
-		            $content .= html_writer::empty_tag('hr');
-		        }//if $role
-		    } // if !$roles
-    	        } else if (is_role_switched($this->page->course->id)) {
-		    $content .= html_writer::start_tag('li');
-		    $icon = html_writer::tag('i', '', array('class'=>'icon-user pull-left'));
-		    $url = new moodle_url('/course/switchrole.php', array('id'=>$courseid, 'sesskey'=>sesskey(), 'switchrole'=>0, 'returnurl'=>$this->page->url->out_as_local_url(false)));
-		    $content .= html_writer::tag('a', $icon.'Return to normal', array('href'=>$url));
-		    $content .= html_writer::end_tag('li');
+			// Beginning of SSIS's special user menu
+	        $content .=  html_writer::start_tag('li');
 
-		    $content .= html_writer::empty_tag('hr');
-	        } // if is_role_switched
+				$loginIcon = html_writer::tag('i', '', array('class'=>'icon-'.($loggedIn?'user':'signin').' pull-left'));
+				$content .= $loginIcon.$this->login_info();
+				
+				//User dropdown
+				if ( $loggedIn)
+				{
+				    $content .= html_writer::start_tag('ul');
+				    if ( isguestuser() )
+				    {
+				        // Any special items for guest users??
+				    }
+				    else
+				    {
+			  	        $courseid = $this->page->course->id;
+	        			$context = context_course::instance($courseid);
 
-		// All these are common to all users except Guest
+				        if (has_capability('moodle/role:switchroles', $context))
+				        {
+				            $roles = get_switchable_roles($context);
+		    				if ( !($roles===null) )
+		    				{
+						        $role = array_filter($roles, "students");
+						        if ($role) {
+						            $role = array_keys($role);
+						            $role = $role[0];
+						            $url = new moodle_url('/course/switchrole.php', array('id'=>$courseid, 'sesskey'=>sesskey(), 'switchrole'=>$role, 'returnurl'=>$this->page->url->out_as_local_url(false)));
+						            $content .= html_writer::start_tag('li');
+						            $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-user pull-left')).'Become Student', array('href'=>$url));
+						            $content .= html_writer::end_tag('li');
+						            $content .= html_writer::empty_tag('hr');
+						        }//if $role
+						    } // if !$roles
+    	        		}
+    	        		else if ( is_role_switched($this->page->course->id) )
+    	        		{
+						    $content .= html_writer::start_tag('li');
+						    $icon = html_writer::tag('i', '', array('class'=>'icon-user pull-left'));
+						    $url = new moodle_url('/course/switchrole.php', array('id'=>$courseid, 'sesskey'=>sesskey(), 'switchrole'=>0, 'returnurl'=>$this->page->url->out_as_local_url(false)));
+				
+						    $content .= html_writer::tag('a', $icon.'Return to normal', array('href'=>$url));
+						    $content .= html_writer::end_tag('li');
+
+						    $content .= html_writer::empty_tag('hr');
+				        } // if is_role_switched
+
+			// All these are common to all users except Guest
 	        $content .= html_writer::start_tag('li');
 	        $content .= html_writer::tag('a', html_writer::tag('i', '', array('class'=>'icon-edit pull-left')).'Edit Profile', array('href'=>"$CFG->wwwroot/user/edit.php?id=$USER->id&course=1"));
 	        $content .= html_writer::end_tag('li');
@@ -568,34 +634,49 @@ class theme_decaf_core_renderer extends core_renderer {
 
 	$content .= html_writer::end_tag('li');
 
-	if (isloggedin()) {
-	    if (isguestuser()) {
+	// End of SSIS's special user menu
+
+	if ( $loggedIn )
+	{
+	    if ( isguestuser() )
+	    {
 	        // Courses are defined programatically for guest users
 	        // Assumes that courses are already set up for guest access, otherwise will fail
-		$this->setup_guest_courses();
-	    } else {
+			$this->setup_guest_courses();
+	    }
+	    else
+	    {
 	        // Courses are defined by normal enrollment for everyone else
 	        $this->setup_courses();
-	    } //isguestuser
+	    }
 
-	    if (has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM))) {
-	        if (!($this->page->course->id === '1266')) {
-	            foreach ($this->my_courses as $category) {
+	    if ( has_capability('moodle/site:config', get_context_instance(CONTEXT_SYSTEM)) )
+	    {
+	        if (!($this->page->course->id === '1266'))
+	        {
+	            foreach ($this->my_courses as $category)
+	            {
 	                $this->add_category_to_custom_menu_for_admins($menu, $category);
-	            } // foreach
-	        } // if !$this->
-	    } else {
+	            }
+	        }
+	    }
+	    else
+	    {
 	        $this->teachinglearningnode = NULL;
 	        $this->add_to_custom_menu($menu, '', $this->my_courses);
-	        if ($this->teachinglearningnode) {
-		   $this->teachinglearningnode->add('Browse DragonNet Classes', new moodle_url('/course/category.php', array('id' => 50)), 'Browse ALL Courses');
-		} // if this->teachinglearningnode
-		// TODO: Add a Teaching & Learning mneu item and add "Browse ALL Courses" to that!
-            } // if has_capability
+	        if ($this->teachinglearningnode)
+	        {
+		   		$this->teachinglearningnode->add('Browse DragonNet Classes', new moodle_url('/course/category.php', array('id' => 50)), 'Browse ALL Courses');
+			} // if this->teachinglearningnode
+		
+			// TODO: Add a Teaching & Learning mneu item and add "Browse ALL Courses" to that!
+			
+		} // if has_capability
 
             // Render each child
 	    
-            foreach ($menu->get_children() as $item) {
+            foreach ($menu->get_children() as $item)
+            {
                 $content .= $this->render_custom_menu_item($item);
             }
 	} // isloggedin
