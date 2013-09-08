@@ -8,7 +8,6 @@ var AwesomeBar = function() {
     AwesomeBar.superclass.constructor.apply(this, arguments);
 };
 AwesomeBar.prototype = {
-    prev : [],
     initializer : function(config) {
 	Y.all('.decaf-awesome-bar > ul > li').each(this.clickListener, this);
     },
